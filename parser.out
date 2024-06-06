@@ -1,0 +1,2118 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    O
+    POTENCIA
+    Y
+
+Grammar
+
+Rule 0     S' -> programa
+Rule 1     programa -> PROGRAMA LLAVIZQ list_decl list_sent LLAVDER
+Rule 2     list_decl -> list_decl decl
+Rule 3     list_decl -> decl
+Rule 4     list_decl -> empty
+Rule 5     decl -> tipo list_id PUNTOCOMA
+Rule 6     tipo -> ENTERO
+Rule 7     tipo -> FLOTANTE
+Rule 8     tipo -> BOOLEANO
+Rule 9     list_id -> list_id COMA ID
+Rule 10    list_id -> ID
+Rule 11    list_sent -> list_sent sent
+Rule 12    list_sent -> sent
+Rule 13    list_sent -> empty
+Rule 14    sent -> sent_if
+Rule 15    sent -> sent_while
+Rule 16    sent -> sent_do
+Rule 17    sent -> sent_read
+Rule 18    sent -> sent_write
+Rule 19    sent -> bloque
+Rule 20    sent -> sent_assign
+Rule 21    sent -> sent_break
+Rule 22    sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI
+Rule 23    sent_if -> SI PARIZQ exp_bool PARDER bloque FSI
+Rule 24    sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque
+Rule 25    sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA
+Rule 26    sent_read -> LEER ID PUNTOCOMA
+Rule 27    sent_write -> ESCRIBIR exp_bool PUNTOCOMA
+Rule 28    bloque -> LLAVIZQ list_sent LLAVDER
+Rule 29    sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA
+Rule 30    sent_break -> BREAK PUNTOCOMA
+Rule 31    exp_bool -> exp_bool OR comb
+Rule 32    exp_bool -> comb
+Rule 33    comb -> comb AND igualdad
+Rule 34    comb -> igualdad
+Rule 35    igualdad -> igualdad IGUAL rel
+Rule 36    igualdad -> igualdad DISTINTO rel
+Rule 37    igualdad -> rel
+Rule 38    rel -> expr op_rel expr
+Rule 39    rel -> expr
+Rule 40    op_rel -> MENOR
+Rule 41    op_rel -> MENORIGUAL
+Rule 42    op_rel -> MAYOR
+Rule 43    op_rel -> MAYORIGUAL
+Rule 44    expr -> expr SUMA term
+Rule 45    expr -> expr RESTA term
+Rule 46    expr -> term
+Rule 47    term -> term MULT unario
+Rule 48    term -> term DIV unario
+Rule 49    term -> unario
+Rule 50    unario -> NO unario
+Rule 51    unario -> RESTA unario
+Rule 52    unario -> factor
+Rule 53    factor -> PARIZQ exp_bool PARDER
+Rule 54    factor -> ID
+Rule 55    factor -> NUMERO
+Rule 56    factor -> VERDADERO
+Rule 57    factor -> FALSO
+Rule 58    empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 33
+ASIGNACION           : 29
+BOOLEANO             : 8
+BREAK                : 30
+COMA                 : 9
+DISTINTO             : 36
+DIV                  : 48
+ENTERO               : 6
+ESCRIBIR             : 27
+FALSO                : 57
+FLOTANTE             : 7
+FSI                  : 22 23
+HACER                : 25
+HASTA                : 25
+ID                   : 9 10 26 29 54
+IGUAL                : 35
+LEER                 : 26
+LLAVDER              : 1 28
+LLAVIZQ              : 1 28
+MAYOR                : 42
+MAYORIGUAL           : 43
+MENOR                : 40
+MENORIGUAL           : 41
+MIENTRAS             : 24
+MULT                 : 47
+NO                   : 50
+NUMERO               : 55
+O                    : 
+OR                   : 31
+PARDER               : 22 23 24 25 53
+PARIZQ               : 22 23 24 25 53
+POTENCIA             : 
+PROGRAMA             : 1
+PUNTOCOMA            : 5 25 26 27 29 30
+RESTA                : 45 51
+SI                   : 22 23
+SINO                 : 22
+SUMA                 : 44
+VERDADERO            : 56
+Y                    : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+bloque               : 19 22 22 23 24 25
+comb                 : 31 32 33
+decl                 : 2 3
+empty                : 4 13
+exp_bool             : 22 23 24 25 27 29 31 53
+expr                 : 38 38 39 44 45
+factor               : 52
+igualdad             : 33 34 35 36
+list_decl            : 1 2
+list_id              : 5 9
+list_sent            : 1 11 28
+op_rel               : 38
+programa             : 0
+rel                  : 35 36 37
+sent                 : 11 12
+sent_assign          : 20
+sent_break           : 21
+sent_do              : 16
+sent_if              : 14
+sent_read            : 17
+sent_while           : 15
+sent_write           : 18
+term                 : 44 45 46 47 48
+tipo                 : 5
+unario               : 47 48 49 50 51
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . programa
+    (1) programa -> . PROGRAMA LLAVIZQ list_decl list_sent LLAVDER
+
+    PROGRAMA        shift and go to state 2
+
+    programa                       shift and go to state 1
+
+state 1
+
+    (0) S' -> programa .
+
+
+
+state 2
+
+    (1) programa -> PROGRAMA . LLAVIZQ list_decl list_sent LLAVDER
+
+    LLAVIZQ         shift and go to state 3
+
+
+state 3
+
+    (1) programa -> PROGRAMA LLAVIZQ . list_decl list_sent LLAVDER
+    (2) list_decl -> . list_decl decl
+    (3) list_decl -> . decl
+    (4) list_decl -> . empty
+    (5) decl -> . tipo list_id PUNTOCOMA
+    (58) empty -> .
+    (6) tipo -> . ENTERO
+    (7) tipo -> . FLOTANTE
+    (8) tipo -> . BOOLEANO
+
+  ! shift/reduce conflict for ENTERO resolved as shift
+  ! shift/reduce conflict for FLOTANTE resolved as shift
+  ! shift/reduce conflict for BOOLEANO resolved as shift
+    SI              reduce using rule 58 (empty -> .)
+    MIENTRAS        reduce using rule 58 (empty -> .)
+    HACER           reduce using rule 58 (empty -> .)
+    LEER            reduce using rule 58 (empty -> .)
+    ESCRIBIR        reduce using rule 58 (empty -> .)
+    LLAVIZQ         reduce using rule 58 (empty -> .)
+    ID              reduce using rule 58 (empty -> .)
+    BREAK           reduce using rule 58 (empty -> .)
+    LLAVDER         reduce using rule 58 (empty -> .)
+    ENTERO          shift and go to state 8
+    FLOTANTE        shift and go to state 9
+    BOOLEANO        shift and go to state 10
+
+  ! ENTERO          [ reduce using rule 58 (empty -> .) ]
+  ! FLOTANTE        [ reduce using rule 58 (empty -> .) ]
+  ! BOOLEANO        [ reduce using rule 58 (empty -> .) ]
+
+    list_decl                      shift and go to state 4
+    decl                           shift and go to state 5
+    empty                          shift and go to state 6
+    tipo                           shift and go to state 7
+
+state 4
+
+    (1) programa -> PROGRAMA LLAVIZQ list_decl . list_sent LLAVDER
+    (2) list_decl -> list_decl . decl
+    (11) list_sent -> . list_sent sent
+    (12) list_sent -> . sent
+    (13) list_sent -> . empty
+    (5) decl -> . tipo list_id PUNTOCOMA
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . bloque
+    (20) sent -> . sent_assign
+    (21) sent -> . sent_break
+    (58) empty -> .
+    (6) tipo -> . ENTERO
+    (7) tipo -> . FLOTANTE
+    (8) tipo -> . BOOLEANO
+    (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque FSI
+    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque FSI
+    (24) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
+    (25) sent_do -> . HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA
+    (26) sent_read -> . LEER ID PUNTOCOMA
+    (27) sent_write -> . ESCRIBIR exp_bool PUNTOCOMA
+    (28) bloque -> . LLAVIZQ list_sent LLAVDER
+    (29) sent_assign -> . ID ASIGNACION exp_bool PUNTOCOMA
+    (30) sent_break -> . BREAK PUNTOCOMA
+
+  ! shift/reduce conflict for SI resolved as shift
+  ! shift/reduce conflict for MIENTRAS resolved as shift
+  ! shift/reduce conflict for HACER resolved as shift
+  ! shift/reduce conflict for LEER resolved as shift
+  ! shift/reduce conflict for ESCRIBIR resolved as shift
+  ! shift/reduce conflict for LLAVIZQ resolved as shift
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for BREAK resolved as shift
+    LLAVDER         reduce using rule 58 (empty -> .)
+    ENTERO          shift and go to state 8
+    FLOTANTE        shift and go to state 9
+    BOOLEANO        shift and go to state 10
+    SI              shift and go to state 24
+    MIENTRAS        shift and go to state 25
+    HACER           shift and go to state 26
+    LEER            shift and go to state 27
+    ESCRIBIR        shift and go to state 29
+    LLAVIZQ         shift and go to state 11
+    ID              shift and go to state 28
+    BREAK           shift and go to state 30
+
+  ! SI              [ reduce using rule 58 (empty -> .) ]
+  ! MIENTRAS        [ reduce using rule 58 (empty -> .) ]
+  ! HACER           [ reduce using rule 58 (empty -> .) ]
+  ! LEER            [ reduce using rule 58 (empty -> .) ]
+  ! ESCRIBIR        [ reduce using rule 58 (empty -> .) ]
+  ! LLAVIZQ         [ reduce using rule 58 (empty -> .) ]
+  ! ID              [ reduce using rule 58 (empty -> .) ]
+  ! BREAK           [ reduce using rule 58 (empty -> .) ]
+
+    list_sent                      shift and go to state 12
+    decl                           shift and go to state 13
+    sent                           shift and go to state 14
+    empty                          shift and go to state 15
+    tipo                           shift and go to state 7
+    sent_if                        shift and go to state 16
+    sent_while                     shift and go to state 17
+    sent_do                        shift and go to state 18
+    sent_read                      shift and go to state 19
+    sent_write                     shift and go to state 20
+    bloque                         shift and go to state 21
+    sent_assign                    shift and go to state 22
+    sent_break                     shift and go to state 23
+
+state 5
+
+    (3) list_decl -> decl .
+
+    ENTERO          reduce using rule 3 (list_decl -> decl .)
+    FLOTANTE        reduce using rule 3 (list_decl -> decl .)
+    BOOLEANO        reduce using rule 3 (list_decl -> decl .)
+    SI              reduce using rule 3 (list_decl -> decl .)
+    MIENTRAS        reduce using rule 3 (list_decl -> decl .)
+    HACER           reduce using rule 3 (list_decl -> decl .)
+    LEER            reduce using rule 3 (list_decl -> decl .)
+    ESCRIBIR        reduce using rule 3 (list_decl -> decl .)
+    LLAVIZQ         reduce using rule 3 (list_decl -> decl .)
+    ID              reduce using rule 3 (list_decl -> decl .)
+    BREAK           reduce using rule 3 (list_decl -> decl .)
+    LLAVDER         reduce using rule 3 (list_decl -> decl .)
+
+
+state 6
+
+    (4) list_decl -> empty .
+
+    ENTERO          reduce using rule 4 (list_decl -> empty .)
+    FLOTANTE        reduce using rule 4 (list_decl -> empty .)
+    BOOLEANO        reduce using rule 4 (list_decl -> empty .)
+    SI              reduce using rule 4 (list_decl -> empty .)
+    MIENTRAS        reduce using rule 4 (list_decl -> empty .)
+    HACER           reduce using rule 4 (list_decl -> empty .)
+    LEER            reduce using rule 4 (list_decl -> empty .)
+    ESCRIBIR        reduce using rule 4 (list_decl -> empty .)
+    LLAVIZQ         reduce using rule 4 (list_decl -> empty .)
+    ID              reduce using rule 4 (list_decl -> empty .)
+    BREAK           reduce using rule 4 (list_decl -> empty .)
+    LLAVDER         reduce using rule 4 (list_decl -> empty .)
+
+
+state 7
+
+    (5) decl -> tipo . list_id PUNTOCOMA
+    (9) list_id -> . list_id COMA ID
+    (10) list_id -> . ID
+
+    ID              shift and go to state 32
+
+    list_id                        shift and go to state 31
+
+state 8
+
+    (6) tipo -> ENTERO .
+
+    ID              reduce using rule 6 (tipo -> ENTERO .)
+
+
+state 9
+
+    (7) tipo -> FLOTANTE .
+
+    ID              reduce using rule 7 (tipo -> FLOTANTE .)
+
+
+state 10
+
+    (8) tipo -> BOOLEANO .
+
+    ID              reduce using rule 8 (tipo -> BOOLEANO .)
+
+
+state 11
+
+    (28) bloque -> LLAVIZQ . list_sent LLAVDER
+    (11) list_sent -> . list_sent sent
+    (12) list_sent -> . sent
+    (13) list_sent -> . empty
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . bloque
+    (20) sent -> . sent_assign
+    (21) sent -> . sent_break
+    (58) empty -> .
+    (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque FSI
+    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque FSI
+    (24) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
+    (25) sent_do -> . HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA
+    (26) sent_read -> . LEER ID PUNTOCOMA
+    (27) sent_write -> . ESCRIBIR exp_bool PUNTOCOMA
+    (28) bloque -> . LLAVIZQ list_sent LLAVDER
+    (29) sent_assign -> . ID ASIGNACION exp_bool PUNTOCOMA
+    (30) sent_break -> . BREAK PUNTOCOMA
+
+  ! shift/reduce conflict for SI resolved as shift
+  ! shift/reduce conflict for MIENTRAS resolved as shift
+  ! shift/reduce conflict for HACER resolved as shift
+  ! shift/reduce conflict for LEER resolved as shift
+  ! shift/reduce conflict for ESCRIBIR resolved as shift
+  ! shift/reduce conflict for LLAVIZQ resolved as shift
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for BREAK resolved as shift
+    LLAVDER         reduce using rule 58 (empty -> .)
+    SI              shift and go to state 24
+    MIENTRAS        shift and go to state 25
+    HACER           shift and go to state 26
+    LEER            shift and go to state 27
+    ESCRIBIR        shift and go to state 29
+    LLAVIZQ         shift and go to state 11
+    ID              shift and go to state 28
+    BREAK           shift and go to state 30
+
+  ! SI              [ reduce using rule 58 (empty -> .) ]
+  ! MIENTRAS        [ reduce using rule 58 (empty -> .) ]
+  ! HACER           [ reduce using rule 58 (empty -> .) ]
+  ! LEER            [ reduce using rule 58 (empty -> .) ]
+  ! ESCRIBIR        [ reduce using rule 58 (empty -> .) ]
+  ! LLAVIZQ         [ reduce using rule 58 (empty -> .) ]
+  ! ID              [ reduce using rule 58 (empty -> .) ]
+  ! BREAK           [ reduce using rule 58 (empty -> .) ]
+
+    list_sent                      shift and go to state 33
+    sent                           shift and go to state 14
+    empty                          shift and go to state 15
+    sent_if                        shift and go to state 16
+    sent_while                     shift and go to state 17
+    sent_do                        shift and go to state 18
+    sent_read                      shift and go to state 19
+    sent_write                     shift and go to state 20
+    bloque                         shift and go to state 21
+    sent_assign                    shift and go to state 22
+    sent_break                     shift and go to state 23
+
+state 12
+
+    (1) programa -> PROGRAMA LLAVIZQ list_decl list_sent . LLAVDER
+    (11) list_sent -> list_sent . sent
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . bloque
+    (20) sent -> . sent_assign
+    (21) sent -> . sent_break
+    (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque FSI
+    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque FSI
+    (24) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
+    (25) sent_do -> . HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA
+    (26) sent_read -> . LEER ID PUNTOCOMA
+    (27) sent_write -> . ESCRIBIR exp_bool PUNTOCOMA
+    (28) bloque -> . LLAVIZQ list_sent LLAVDER
+    (29) sent_assign -> . ID ASIGNACION exp_bool PUNTOCOMA
+    (30) sent_break -> . BREAK PUNTOCOMA
+
+    LLAVDER         shift and go to state 34
+    SI              shift and go to state 24
+    MIENTRAS        shift and go to state 25
+    HACER           shift and go to state 26
+    LEER            shift and go to state 27
+    ESCRIBIR        shift and go to state 29
+    LLAVIZQ         shift and go to state 11
+    ID              shift and go to state 28
+    BREAK           shift and go to state 30
+
+    sent                           shift and go to state 35
+    sent_if                        shift and go to state 16
+    sent_while                     shift and go to state 17
+    sent_do                        shift and go to state 18
+    sent_read                      shift and go to state 19
+    sent_write                     shift and go to state 20
+    bloque                         shift and go to state 21
+    sent_assign                    shift and go to state 22
+    sent_break                     shift and go to state 23
+
+state 13
+
+    (2) list_decl -> list_decl decl .
+
+    ENTERO          reduce using rule 2 (list_decl -> list_decl decl .)
+    FLOTANTE        reduce using rule 2 (list_decl -> list_decl decl .)
+    BOOLEANO        reduce using rule 2 (list_decl -> list_decl decl .)
+    SI              reduce using rule 2 (list_decl -> list_decl decl .)
+    MIENTRAS        reduce using rule 2 (list_decl -> list_decl decl .)
+    HACER           reduce using rule 2 (list_decl -> list_decl decl .)
+    LEER            reduce using rule 2 (list_decl -> list_decl decl .)
+    ESCRIBIR        reduce using rule 2 (list_decl -> list_decl decl .)
+    LLAVIZQ         reduce using rule 2 (list_decl -> list_decl decl .)
+    ID              reduce using rule 2 (list_decl -> list_decl decl .)
+    BREAK           reduce using rule 2 (list_decl -> list_decl decl .)
+    LLAVDER         reduce using rule 2 (list_decl -> list_decl decl .)
+
+
+state 14
+
+    (12) list_sent -> sent .
+
+    LLAVDER         reduce using rule 12 (list_sent -> sent .)
+    SI              reduce using rule 12 (list_sent -> sent .)
+    MIENTRAS        reduce using rule 12 (list_sent -> sent .)
+    HACER           reduce using rule 12 (list_sent -> sent .)
+    LEER            reduce using rule 12 (list_sent -> sent .)
+    ESCRIBIR        reduce using rule 12 (list_sent -> sent .)
+    LLAVIZQ         reduce using rule 12 (list_sent -> sent .)
+    ID              reduce using rule 12 (list_sent -> sent .)
+    BREAK           reduce using rule 12 (list_sent -> sent .)
+
+
+state 15
+
+    (13) list_sent -> empty .
+
+    LLAVDER         reduce using rule 13 (list_sent -> empty .)
+    SI              reduce using rule 13 (list_sent -> empty .)
+    MIENTRAS        reduce using rule 13 (list_sent -> empty .)
+    HACER           reduce using rule 13 (list_sent -> empty .)
+    LEER            reduce using rule 13 (list_sent -> empty .)
+    ESCRIBIR        reduce using rule 13 (list_sent -> empty .)
+    LLAVIZQ         reduce using rule 13 (list_sent -> empty .)
+    ID              reduce using rule 13 (list_sent -> empty .)
+    BREAK           reduce using rule 13 (list_sent -> empty .)
+
+
+state 16
+
+    (14) sent -> sent_if .
+
+    LLAVDER         reduce using rule 14 (sent -> sent_if .)
+    SI              reduce using rule 14 (sent -> sent_if .)
+    MIENTRAS        reduce using rule 14 (sent -> sent_if .)
+    HACER           reduce using rule 14 (sent -> sent_if .)
+    LEER            reduce using rule 14 (sent -> sent_if .)
+    ESCRIBIR        reduce using rule 14 (sent -> sent_if .)
+    LLAVIZQ         reduce using rule 14 (sent -> sent_if .)
+    ID              reduce using rule 14 (sent -> sent_if .)
+    BREAK           reduce using rule 14 (sent -> sent_if .)
+
+
+state 17
+
+    (15) sent -> sent_while .
+
+    LLAVDER         reduce using rule 15 (sent -> sent_while .)
+    SI              reduce using rule 15 (sent -> sent_while .)
+    MIENTRAS        reduce using rule 15 (sent -> sent_while .)
+    HACER           reduce using rule 15 (sent -> sent_while .)
+    LEER            reduce using rule 15 (sent -> sent_while .)
+    ESCRIBIR        reduce using rule 15 (sent -> sent_while .)
+    LLAVIZQ         reduce using rule 15 (sent -> sent_while .)
+    ID              reduce using rule 15 (sent -> sent_while .)
+    BREAK           reduce using rule 15 (sent -> sent_while .)
+
+
+state 18
+
+    (16) sent -> sent_do .
+
+    LLAVDER         reduce using rule 16 (sent -> sent_do .)
+    SI              reduce using rule 16 (sent -> sent_do .)
+    MIENTRAS        reduce using rule 16 (sent -> sent_do .)
+    HACER           reduce using rule 16 (sent -> sent_do .)
+    LEER            reduce using rule 16 (sent -> sent_do .)
+    ESCRIBIR        reduce using rule 16 (sent -> sent_do .)
+    LLAVIZQ         reduce using rule 16 (sent -> sent_do .)
+    ID              reduce using rule 16 (sent -> sent_do .)
+    BREAK           reduce using rule 16 (sent -> sent_do .)
+
+
+state 19
+
+    (17) sent -> sent_read .
+
+    LLAVDER         reduce using rule 17 (sent -> sent_read .)
+    SI              reduce using rule 17 (sent -> sent_read .)
+    MIENTRAS        reduce using rule 17 (sent -> sent_read .)
+    HACER           reduce using rule 17 (sent -> sent_read .)
+    LEER            reduce using rule 17 (sent -> sent_read .)
+    ESCRIBIR        reduce using rule 17 (sent -> sent_read .)
+    LLAVIZQ         reduce using rule 17 (sent -> sent_read .)
+    ID              reduce using rule 17 (sent -> sent_read .)
+    BREAK           reduce using rule 17 (sent -> sent_read .)
+
+
+state 20
+
+    (18) sent -> sent_write .
+
+    LLAVDER         reduce using rule 18 (sent -> sent_write .)
+    SI              reduce using rule 18 (sent -> sent_write .)
+    MIENTRAS        reduce using rule 18 (sent -> sent_write .)
+    HACER           reduce using rule 18 (sent -> sent_write .)
+    LEER            reduce using rule 18 (sent -> sent_write .)
+    ESCRIBIR        reduce using rule 18 (sent -> sent_write .)
+    LLAVIZQ         reduce using rule 18 (sent -> sent_write .)
+    ID              reduce using rule 18 (sent -> sent_write .)
+    BREAK           reduce using rule 18 (sent -> sent_write .)
+
+
+state 21
+
+    (19) sent -> bloque .
+
+    LLAVDER         reduce using rule 19 (sent -> bloque .)
+    SI              reduce using rule 19 (sent -> bloque .)
+    MIENTRAS        reduce using rule 19 (sent -> bloque .)
+    HACER           reduce using rule 19 (sent -> bloque .)
+    LEER            reduce using rule 19 (sent -> bloque .)
+    ESCRIBIR        reduce using rule 19 (sent -> bloque .)
+    LLAVIZQ         reduce using rule 19 (sent -> bloque .)
+    ID              reduce using rule 19 (sent -> bloque .)
+    BREAK           reduce using rule 19 (sent -> bloque .)
+
+
+state 22
+
+    (20) sent -> sent_assign .
+
+    LLAVDER         reduce using rule 20 (sent -> sent_assign .)
+    SI              reduce using rule 20 (sent -> sent_assign .)
+    MIENTRAS        reduce using rule 20 (sent -> sent_assign .)
+    HACER           reduce using rule 20 (sent -> sent_assign .)
+    LEER            reduce using rule 20 (sent -> sent_assign .)
+    ESCRIBIR        reduce using rule 20 (sent -> sent_assign .)
+    LLAVIZQ         reduce using rule 20 (sent -> sent_assign .)
+    ID              reduce using rule 20 (sent -> sent_assign .)
+    BREAK           reduce using rule 20 (sent -> sent_assign .)
+
+
+state 23
+
+    (21) sent -> sent_break .
+
+    LLAVDER         reduce using rule 21 (sent -> sent_break .)
+    SI              reduce using rule 21 (sent -> sent_break .)
+    MIENTRAS        reduce using rule 21 (sent -> sent_break .)
+    HACER           reduce using rule 21 (sent -> sent_break .)
+    LEER            reduce using rule 21 (sent -> sent_break .)
+    ESCRIBIR        reduce using rule 21 (sent -> sent_break .)
+    LLAVIZQ         reduce using rule 21 (sent -> sent_break .)
+    ID              reduce using rule 21 (sent -> sent_break .)
+    BREAK           reduce using rule 21 (sent -> sent_break .)
+
+
+state 24
+
+    (22) sent_if -> SI . PARIZQ exp_bool PARDER bloque SINO bloque FSI
+    (23) sent_if -> SI . PARIZQ exp_bool PARDER bloque FSI
+
+    PARIZQ          shift and go to state 36
+
+
+state 25
+
+    (24) sent_while -> MIENTRAS . PARIZQ exp_bool PARDER bloque
+
+    PARIZQ          shift and go to state 37
+
+
+state 26
+
+    (25) sent_do -> HACER . bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA
+    (28) bloque -> . LLAVIZQ list_sent LLAVDER
+
+    LLAVIZQ         shift and go to state 11
+
+    bloque                         shift and go to state 38
+
+state 27
+
+    (26) sent_read -> LEER . ID PUNTOCOMA
+
+    ID              shift and go to state 39
+
+
+state 28
+
+    (29) sent_assign -> ID . ASIGNACION exp_bool PUNTOCOMA
+
+    ASIGNACION      shift and go to state 40
+
+
+state 29
+
+    (27) sent_write -> ESCRIBIR . exp_bool PUNTOCOMA
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad IGUAL rel
+    (36) igualdad -> . igualdad DISTINTO rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    exp_bool                       shift and go to state 41
+    comb                           shift and go to state 42
+    igualdad                       shift and go to state 43
+    rel                            shift and go to state 44
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 30
+
+    (30) sent_break -> BREAK . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 56
+
+
+state 31
+
+    (5) decl -> tipo list_id . PUNTOCOMA
+    (9) list_id -> list_id . COMA ID
+
+    PUNTOCOMA       shift and go to state 57
+    COMA            shift and go to state 58
+
+
+state 32
+
+    (10) list_id -> ID .
+
+    PUNTOCOMA       reduce using rule 10 (list_id -> ID .)
+    COMA            reduce using rule 10 (list_id -> ID .)
+
+
+state 33
+
+    (28) bloque -> LLAVIZQ list_sent . LLAVDER
+    (11) list_sent -> list_sent . sent
+    (14) sent -> . sent_if
+    (15) sent -> . sent_while
+    (16) sent -> . sent_do
+    (17) sent -> . sent_read
+    (18) sent -> . sent_write
+    (19) sent -> . bloque
+    (20) sent -> . sent_assign
+    (21) sent -> . sent_break
+    (22) sent_if -> . SI PARIZQ exp_bool PARDER bloque SINO bloque FSI
+    (23) sent_if -> . SI PARIZQ exp_bool PARDER bloque FSI
+    (24) sent_while -> . MIENTRAS PARIZQ exp_bool PARDER bloque
+    (25) sent_do -> . HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA
+    (26) sent_read -> . LEER ID PUNTOCOMA
+    (27) sent_write -> . ESCRIBIR exp_bool PUNTOCOMA
+    (28) bloque -> . LLAVIZQ list_sent LLAVDER
+    (29) sent_assign -> . ID ASIGNACION exp_bool PUNTOCOMA
+    (30) sent_break -> . BREAK PUNTOCOMA
+
+    LLAVDER         shift and go to state 59
+    SI              shift and go to state 24
+    MIENTRAS        shift and go to state 25
+    HACER           shift and go to state 26
+    LEER            shift and go to state 27
+    ESCRIBIR        shift and go to state 29
+    LLAVIZQ         shift and go to state 11
+    ID              shift and go to state 28
+    BREAK           shift and go to state 30
+
+    sent                           shift and go to state 35
+    sent_if                        shift and go to state 16
+    sent_while                     shift and go to state 17
+    sent_do                        shift and go to state 18
+    sent_read                      shift and go to state 19
+    sent_write                     shift and go to state 20
+    bloque                         shift and go to state 21
+    sent_assign                    shift and go to state 22
+    sent_break                     shift and go to state 23
+
+state 34
+
+    (1) programa -> PROGRAMA LLAVIZQ list_decl list_sent LLAVDER .
+
+    $end            reduce using rule 1 (programa -> PROGRAMA LLAVIZQ list_decl list_sent LLAVDER .)
+
+
+state 35
+
+    (11) list_sent -> list_sent sent .
+
+    LLAVDER         reduce using rule 11 (list_sent -> list_sent sent .)
+    SI              reduce using rule 11 (list_sent -> list_sent sent .)
+    MIENTRAS        reduce using rule 11 (list_sent -> list_sent sent .)
+    HACER           reduce using rule 11 (list_sent -> list_sent sent .)
+    LEER            reduce using rule 11 (list_sent -> list_sent sent .)
+    ESCRIBIR        reduce using rule 11 (list_sent -> list_sent sent .)
+    LLAVIZQ         reduce using rule 11 (list_sent -> list_sent sent .)
+    ID              reduce using rule 11 (list_sent -> list_sent sent .)
+    BREAK           reduce using rule 11 (list_sent -> list_sent sent .)
+
+
+state 36
+
+    (22) sent_if -> SI PARIZQ . exp_bool PARDER bloque SINO bloque FSI
+    (23) sent_if -> SI PARIZQ . exp_bool PARDER bloque FSI
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad IGUAL rel
+    (36) igualdad -> . igualdad DISTINTO rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    exp_bool                       shift and go to state 60
+    comb                           shift and go to state 42
+    igualdad                       shift and go to state 43
+    rel                            shift and go to state 44
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 37
+
+    (24) sent_while -> MIENTRAS PARIZQ . exp_bool PARDER bloque
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad IGUAL rel
+    (36) igualdad -> . igualdad DISTINTO rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    exp_bool                       shift and go to state 61
+    comb                           shift and go to state 42
+    igualdad                       shift and go to state 43
+    rel                            shift and go to state 44
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 38
+
+    (25) sent_do -> HACER bloque . HASTA PARIZQ exp_bool PARDER PUNTOCOMA
+
+    HASTA           shift and go to state 62
+
+
+state 39
+
+    (26) sent_read -> LEER ID . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 63
+
+
+state 40
+
+    (29) sent_assign -> ID ASIGNACION . exp_bool PUNTOCOMA
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad IGUAL rel
+    (36) igualdad -> . igualdad DISTINTO rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    exp_bool                       shift and go to state 64
+    comb                           shift and go to state 42
+    igualdad                       shift and go to state 43
+    rel                            shift and go to state 44
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 41
+
+    (27) sent_write -> ESCRIBIR exp_bool . PUNTOCOMA
+    (31) exp_bool -> exp_bool . OR comb
+
+    PUNTOCOMA       shift and go to state 65
+    OR              shift and go to state 66
+
+
+state 42
+
+    (32) exp_bool -> comb .
+    (33) comb -> comb . AND igualdad
+
+    PUNTOCOMA       reduce using rule 32 (exp_bool -> comb .)
+    OR              reduce using rule 32 (exp_bool -> comb .)
+    PARDER          reduce using rule 32 (exp_bool -> comb .)
+    AND             shift and go to state 67
+
+
+state 43
+
+    (34) comb -> igualdad .
+    (35) igualdad -> igualdad . IGUAL rel
+    (36) igualdad -> igualdad . DISTINTO rel
+
+    AND             reduce using rule 34 (comb -> igualdad .)
+    PUNTOCOMA       reduce using rule 34 (comb -> igualdad .)
+    OR              reduce using rule 34 (comb -> igualdad .)
+    PARDER          reduce using rule 34 (comb -> igualdad .)
+    IGUAL           shift and go to state 68
+    DISTINTO        shift and go to state 69
+
+
+state 44
+
+    (37) igualdad -> rel .
+
+    IGUAL           reduce using rule 37 (igualdad -> rel .)
+    DISTINTO        reduce using rule 37 (igualdad -> rel .)
+    AND             reduce using rule 37 (igualdad -> rel .)
+    PUNTOCOMA       reduce using rule 37 (igualdad -> rel .)
+    OR              reduce using rule 37 (igualdad -> rel .)
+    PARDER          reduce using rule 37 (igualdad -> rel .)
+
+
+state 45
+
+    (38) rel -> expr . op_rel expr
+    (39) rel -> expr .
+    (44) expr -> expr . SUMA term
+    (45) expr -> expr . RESTA term
+    (40) op_rel -> . MENOR
+    (41) op_rel -> . MENORIGUAL
+    (42) op_rel -> . MAYOR
+    (43) op_rel -> . MAYORIGUAL
+
+    IGUAL           reduce using rule 39 (rel -> expr .)
+    DISTINTO        reduce using rule 39 (rel -> expr .)
+    AND             reduce using rule 39 (rel -> expr .)
+    PUNTOCOMA       reduce using rule 39 (rel -> expr .)
+    OR              reduce using rule 39 (rel -> expr .)
+    PARDER          reduce using rule 39 (rel -> expr .)
+    SUMA            shift and go to state 71
+    RESTA           shift and go to state 72
+    MENOR           shift and go to state 73
+    MENORIGUAL      shift and go to state 74
+    MAYOR           shift and go to state 75
+    MAYORIGUAL      shift and go to state 76
+
+    op_rel                         shift and go to state 70
+
+state 46
+
+    (46) expr -> term .
+    (47) term -> term . MULT unario
+    (48) term -> term . DIV unario
+
+    SUMA            reduce using rule 46 (expr -> term .)
+    RESTA           reduce using rule 46 (expr -> term .)
+    MENOR           reduce using rule 46 (expr -> term .)
+    MENORIGUAL      reduce using rule 46 (expr -> term .)
+    MAYOR           reduce using rule 46 (expr -> term .)
+    MAYORIGUAL      reduce using rule 46 (expr -> term .)
+    IGUAL           reduce using rule 46 (expr -> term .)
+    DISTINTO        reduce using rule 46 (expr -> term .)
+    AND             reduce using rule 46 (expr -> term .)
+    PUNTOCOMA       reduce using rule 46 (expr -> term .)
+    OR              reduce using rule 46 (expr -> term .)
+    PARDER          reduce using rule 46 (expr -> term .)
+    MULT            shift and go to state 77
+    DIV             shift and go to state 78
+
+
+state 47
+
+    (51) unario -> RESTA . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    unario                         shift and go to state 79
+    factor                         shift and go to state 50
+
+state 48
+
+    (49) term -> unario .
+
+    MULT            reduce using rule 49 (term -> unario .)
+    DIV             reduce using rule 49 (term -> unario .)
+    SUMA            reduce using rule 49 (term -> unario .)
+    RESTA           reduce using rule 49 (term -> unario .)
+    MENOR           reduce using rule 49 (term -> unario .)
+    MENORIGUAL      reduce using rule 49 (term -> unario .)
+    MAYOR           reduce using rule 49 (term -> unario .)
+    MAYORIGUAL      reduce using rule 49 (term -> unario .)
+    IGUAL           reduce using rule 49 (term -> unario .)
+    DISTINTO        reduce using rule 49 (term -> unario .)
+    AND             reduce using rule 49 (term -> unario .)
+    PUNTOCOMA       reduce using rule 49 (term -> unario .)
+    OR              reduce using rule 49 (term -> unario .)
+    PARDER          reduce using rule 49 (term -> unario .)
+
+
+state 49
+
+    (50) unario -> NO . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    unario                         shift and go to state 80
+    factor                         shift and go to state 50
+
+state 50
+
+    (52) unario -> factor .
+
+    MULT            reduce using rule 52 (unario -> factor .)
+    DIV             reduce using rule 52 (unario -> factor .)
+    SUMA            reduce using rule 52 (unario -> factor .)
+    RESTA           reduce using rule 52 (unario -> factor .)
+    MENOR           reduce using rule 52 (unario -> factor .)
+    MENORIGUAL      reduce using rule 52 (unario -> factor .)
+    MAYOR           reduce using rule 52 (unario -> factor .)
+    MAYORIGUAL      reduce using rule 52 (unario -> factor .)
+    IGUAL           reduce using rule 52 (unario -> factor .)
+    DISTINTO        reduce using rule 52 (unario -> factor .)
+    AND             reduce using rule 52 (unario -> factor .)
+    PUNTOCOMA       reduce using rule 52 (unario -> factor .)
+    OR              reduce using rule 52 (unario -> factor .)
+    PARDER          reduce using rule 52 (unario -> factor .)
+
+
+state 51
+
+    (53) factor -> PARIZQ . exp_bool PARDER
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad IGUAL rel
+    (36) igualdad -> . igualdad DISTINTO rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    exp_bool                       shift and go to state 81
+    comb                           shift and go to state 42
+    igualdad                       shift and go to state 43
+    rel                            shift and go to state 44
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 52
+
+    (54) factor -> ID .
+
+    MULT            reduce using rule 54 (factor -> ID .)
+    DIV             reduce using rule 54 (factor -> ID .)
+    SUMA            reduce using rule 54 (factor -> ID .)
+    RESTA           reduce using rule 54 (factor -> ID .)
+    MENOR           reduce using rule 54 (factor -> ID .)
+    MENORIGUAL      reduce using rule 54 (factor -> ID .)
+    MAYOR           reduce using rule 54 (factor -> ID .)
+    MAYORIGUAL      reduce using rule 54 (factor -> ID .)
+    IGUAL           reduce using rule 54 (factor -> ID .)
+    DISTINTO        reduce using rule 54 (factor -> ID .)
+    AND             reduce using rule 54 (factor -> ID .)
+    PUNTOCOMA       reduce using rule 54 (factor -> ID .)
+    OR              reduce using rule 54 (factor -> ID .)
+    PARDER          reduce using rule 54 (factor -> ID .)
+
+
+state 53
+
+    (55) factor -> NUMERO .
+
+    MULT            reduce using rule 55 (factor -> NUMERO .)
+    DIV             reduce using rule 55 (factor -> NUMERO .)
+    SUMA            reduce using rule 55 (factor -> NUMERO .)
+    RESTA           reduce using rule 55 (factor -> NUMERO .)
+    MENOR           reduce using rule 55 (factor -> NUMERO .)
+    MENORIGUAL      reduce using rule 55 (factor -> NUMERO .)
+    MAYOR           reduce using rule 55 (factor -> NUMERO .)
+    MAYORIGUAL      reduce using rule 55 (factor -> NUMERO .)
+    IGUAL           reduce using rule 55 (factor -> NUMERO .)
+    DISTINTO        reduce using rule 55 (factor -> NUMERO .)
+    AND             reduce using rule 55 (factor -> NUMERO .)
+    PUNTOCOMA       reduce using rule 55 (factor -> NUMERO .)
+    OR              reduce using rule 55 (factor -> NUMERO .)
+    PARDER          reduce using rule 55 (factor -> NUMERO .)
+
+
+state 54
+
+    (56) factor -> VERDADERO .
+
+    MULT            reduce using rule 56 (factor -> VERDADERO .)
+    DIV             reduce using rule 56 (factor -> VERDADERO .)
+    SUMA            reduce using rule 56 (factor -> VERDADERO .)
+    RESTA           reduce using rule 56 (factor -> VERDADERO .)
+    MENOR           reduce using rule 56 (factor -> VERDADERO .)
+    MENORIGUAL      reduce using rule 56 (factor -> VERDADERO .)
+    MAYOR           reduce using rule 56 (factor -> VERDADERO .)
+    MAYORIGUAL      reduce using rule 56 (factor -> VERDADERO .)
+    IGUAL           reduce using rule 56 (factor -> VERDADERO .)
+    DISTINTO        reduce using rule 56 (factor -> VERDADERO .)
+    AND             reduce using rule 56 (factor -> VERDADERO .)
+    PUNTOCOMA       reduce using rule 56 (factor -> VERDADERO .)
+    OR              reduce using rule 56 (factor -> VERDADERO .)
+    PARDER          reduce using rule 56 (factor -> VERDADERO .)
+
+
+state 55
+
+    (57) factor -> FALSO .
+
+    MULT            reduce using rule 57 (factor -> FALSO .)
+    DIV             reduce using rule 57 (factor -> FALSO .)
+    SUMA            reduce using rule 57 (factor -> FALSO .)
+    RESTA           reduce using rule 57 (factor -> FALSO .)
+    MENOR           reduce using rule 57 (factor -> FALSO .)
+    MENORIGUAL      reduce using rule 57 (factor -> FALSO .)
+    MAYOR           reduce using rule 57 (factor -> FALSO .)
+    MAYORIGUAL      reduce using rule 57 (factor -> FALSO .)
+    IGUAL           reduce using rule 57 (factor -> FALSO .)
+    DISTINTO        reduce using rule 57 (factor -> FALSO .)
+    AND             reduce using rule 57 (factor -> FALSO .)
+    PUNTOCOMA       reduce using rule 57 (factor -> FALSO .)
+    OR              reduce using rule 57 (factor -> FALSO .)
+    PARDER          reduce using rule 57 (factor -> FALSO .)
+
+
+state 56
+
+    (30) sent_break -> BREAK PUNTOCOMA .
+
+    LLAVDER         reduce using rule 30 (sent_break -> BREAK PUNTOCOMA .)
+    SI              reduce using rule 30 (sent_break -> BREAK PUNTOCOMA .)
+    MIENTRAS        reduce using rule 30 (sent_break -> BREAK PUNTOCOMA .)
+    HACER           reduce using rule 30 (sent_break -> BREAK PUNTOCOMA .)
+    LEER            reduce using rule 30 (sent_break -> BREAK PUNTOCOMA .)
+    ESCRIBIR        reduce using rule 30 (sent_break -> BREAK PUNTOCOMA .)
+    LLAVIZQ         reduce using rule 30 (sent_break -> BREAK PUNTOCOMA .)
+    ID              reduce using rule 30 (sent_break -> BREAK PUNTOCOMA .)
+    BREAK           reduce using rule 30 (sent_break -> BREAK PUNTOCOMA .)
+
+
+state 57
+
+    (5) decl -> tipo list_id PUNTOCOMA .
+
+    ENTERO          reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    FLOTANTE        reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    BOOLEANO        reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    SI              reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    MIENTRAS        reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    HACER           reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    LEER            reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    ESCRIBIR        reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    LLAVIZQ         reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    ID              reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    BREAK           reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+    LLAVDER         reduce using rule 5 (decl -> tipo list_id PUNTOCOMA .)
+
+
+state 58
+
+    (9) list_id -> list_id COMA . ID
+
+    ID              shift and go to state 82
+
+
+state 59
+
+    (28) bloque -> LLAVIZQ list_sent LLAVDER .
+
+    LLAVDER         reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    SI              reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    MIENTRAS        reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    HACER           reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    LEER            reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    ESCRIBIR        reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    LLAVIZQ         reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    ID              reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    BREAK           reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    HASTA           reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    SINO            reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+    FSI             reduce using rule 28 (bloque -> LLAVIZQ list_sent LLAVDER .)
+
+
+state 60
+
+    (22) sent_if -> SI PARIZQ exp_bool . PARDER bloque SINO bloque FSI
+    (23) sent_if -> SI PARIZQ exp_bool . PARDER bloque FSI
+    (31) exp_bool -> exp_bool . OR comb
+
+    PARDER          shift and go to state 83
+    OR              shift and go to state 66
+
+
+state 61
+
+    (24) sent_while -> MIENTRAS PARIZQ exp_bool . PARDER bloque
+    (31) exp_bool -> exp_bool . OR comb
+
+    PARDER          shift and go to state 84
+    OR              shift and go to state 66
+
+
+state 62
+
+    (25) sent_do -> HACER bloque HASTA . PARIZQ exp_bool PARDER PUNTOCOMA
+
+    PARIZQ          shift and go to state 85
+
+
+state 63
+
+    (26) sent_read -> LEER ID PUNTOCOMA .
+
+    LLAVDER         reduce using rule 26 (sent_read -> LEER ID PUNTOCOMA .)
+    SI              reduce using rule 26 (sent_read -> LEER ID PUNTOCOMA .)
+    MIENTRAS        reduce using rule 26 (sent_read -> LEER ID PUNTOCOMA .)
+    HACER           reduce using rule 26 (sent_read -> LEER ID PUNTOCOMA .)
+    LEER            reduce using rule 26 (sent_read -> LEER ID PUNTOCOMA .)
+    ESCRIBIR        reduce using rule 26 (sent_read -> LEER ID PUNTOCOMA .)
+    LLAVIZQ         reduce using rule 26 (sent_read -> LEER ID PUNTOCOMA .)
+    ID              reduce using rule 26 (sent_read -> LEER ID PUNTOCOMA .)
+    BREAK           reduce using rule 26 (sent_read -> LEER ID PUNTOCOMA .)
+
+
+state 64
+
+    (29) sent_assign -> ID ASIGNACION exp_bool . PUNTOCOMA
+    (31) exp_bool -> exp_bool . OR comb
+
+    PUNTOCOMA       shift and go to state 86
+    OR              shift and go to state 66
+
+
+state 65
+
+    (27) sent_write -> ESCRIBIR exp_bool PUNTOCOMA .
+
+    LLAVDER         reduce using rule 27 (sent_write -> ESCRIBIR exp_bool PUNTOCOMA .)
+    SI              reduce using rule 27 (sent_write -> ESCRIBIR exp_bool PUNTOCOMA .)
+    MIENTRAS        reduce using rule 27 (sent_write -> ESCRIBIR exp_bool PUNTOCOMA .)
+    HACER           reduce using rule 27 (sent_write -> ESCRIBIR exp_bool PUNTOCOMA .)
+    LEER            reduce using rule 27 (sent_write -> ESCRIBIR exp_bool PUNTOCOMA .)
+    ESCRIBIR        reduce using rule 27 (sent_write -> ESCRIBIR exp_bool PUNTOCOMA .)
+    LLAVIZQ         reduce using rule 27 (sent_write -> ESCRIBIR exp_bool PUNTOCOMA .)
+    ID              reduce using rule 27 (sent_write -> ESCRIBIR exp_bool PUNTOCOMA .)
+    BREAK           reduce using rule 27 (sent_write -> ESCRIBIR exp_bool PUNTOCOMA .)
+
+
+state 66
+
+    (31) exp_bool -> exp_bool OR . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad IGUAL rel
+    (36) igualdad -> . igualdad DISTINTO rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    comb                           shift and go to state 87
+    igualdad                       shift and go to state 43
+    rel                            shift and go to state 44
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 67
+
+    (33) comb -> comb AND . igualdad
+    (35) igualdad -> . igualdad IGUAL rel
+    (36) igualdad -> . igualdad DISTINTO rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    igualdad                       shift and go to state 88
+    rel                            shift and go to state 44
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 68
+
+    (35) igualdad -> igualdad IGUAL . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    rel                            shift and go to state 89
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 69
+
+    (36) igualdad -> igualdad DISTINTO . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    rel                            shift and go to state 90
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 70
+
+    (38) rel -> expr op_rel . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    expr                           shift and go to state 91
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 71
+
+    (44) expr -> expr SUMA . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    term                           shift and go to state 92
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 72
+
+    (45) expr -> expr RESTA . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    term                           shift and go to state 93
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 73
+
+    (40) op_rel -> MENOR .
+
+    NO              reduce using rule 40 (op_rel -> MENOR .)
+    RESTA           reduce using rule 40 (op_rel -> MENOR .)
+    PARIZQ          reduce using rule 40 (op_rel -> MENOR .)
+    ID              reduce using rule 40 (op_rel -> MENOR .)
+    NUMERO          reduce using rule 40 (op_rel -> MENOR .)
+    VERDADERO       reduce using rule 40 (op_rel -> MENOR .)
+    FALSO           reduce using rule 40 (op_rel -> MENOR .)
+
+
+state 74
+
+    (41) op_rel -> MENORIGUAL .
+
+    NO              reduce using rule 41 (op_rel -> MENORIGUAL .)
+    RESTA           reduce using rule 41 (op_rel -> MENORIGUAL .)
+    PARIZQ          reduce using rule 41 (op_rel -> MENORIGUAL .)
+    ID              reduce using rule 41 (op_rel -> MENORIGUAL .)
+    NUMERO          reduce using rule 41 (op_rel -> MENORIGUAL .)
+    VERDADERO       reduce using rule 41 (op_rel -> MENORIGUAL .)
+    FALSO           reduce using rule 41 (op_rel -> MENORIGUAL .)
+
+
+state 75
+
+    (42) op_rel -> MAYOR .
+
+    NO              reduce using rule 42 (op_rel -> MAYOR .)
+    RESTA           reduce using rule 42 (op_rel -> MAYOR .)
+    PARIZQ          reduce using rule 42 (op_rel -> MAYOR .)
+    ID              reduce using rule 42 (op_rel -> MAYOR .)
+    NUMERO          reduce using rule 42 (op_rel -> MAYOR .)
+    VERDADERO       reduce using rule 42 (op_rel -> MAYOR .)
+    FALSO           reduce using rule 42 (op_rel -> MAYOR .)
+
+
+state 76
+
+    (43) op_rel -> MAYORIGUAL .
+
+    NO              reduce using rule 43 (op_rel -> MAYORIGUAL .)
+    RESTA           reduce using rule 43 (op_rel -> MAYORIGUAL .)
+    PARIZQ          reduce using rule 43 (op_rel -> MAYORIGUAL .)
+    ID              reduce using rule 43 (op_rel -> MAYORIGUAL .)
+    NUMERO          reduce using rule 43 (op_rel -> MAYORIGUAL .)
+    VERDADERO       reduce using rule 43 (op_rel -> MAYORIGUAL .)
+    FALSO           reduce using rule 43 (op_rel -> MAYORIGUAL .)
+
+
+state 77
+
+    (47) term -> term MULT . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    unario                         shift and go to state 94
+    factor                         shift and go to state 50
+
+state 78
+
+    (48) term -> term DIV . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    unario                         shift and go to state 95
+    factor                         shift and go to state 50
+
+state 79
+
+    (51) unario -> RESTA unario .
+
+    MULT            reduce using rule 51 (unario -> RESTA unario .)
+    DIV             reduce using rule 51 (unario -> RESTA unario .)
+    SUMA            reduce using rule 51 (unario -> RESTA unario .)
+    RESTA           reduce using rule 51 (unario -> RESTA unario .)
+    MENOR           reduce using rule 51 (unario -> RESTA unario .)
+    MENORIGUAL      reduce using rule 51 (unario -> RESTA unario .)
+    MAYOR           reduce using rule 51 (unario -> RESTA unario .)
+    MAYORIGUAL      reduce using rule 51 (unario -> RESTA unario .)
+    IGUAL           reduce using rule 51 (unario -> RESTA unario .)
+    DISTINTO        reduce using rule 51 (unario -> RESTA unario .)
+    AND             reduce using rule 51 (unario -> RESTA unario .)
+    PUNTOCOMA       reduce using rule 51 (unario -> RESTA unario .)
+    OR              reduce using rule 51 (unario -> RESTA unario .)
+    PARDER          reduce using rule 51 (unario -> RESTA unario .)
+
+
+state 80
+
+    (50) unario -> NO unario .
+
+    MULT            reduce using rule 50 (unario -> NO unario .)
+    DIV             reduce using rule 50 (unario -> NO unario .)
+    SUMA            reduce using rule 50 (unario -> NO unario .)
+    RESTA           reduce using rule 50 (unario -> NO unario .)
+    MENOR           reduce using rule 50 (unario -> NO unario .)
+    MENORIGUAL      reduce using rule 50 (unario -> NO unario .)
+    MAYOR           reduce using rule 50 (unario -> NO unario .)
+    MAYORIGUAL      reduce using rule 50 (unario -> NO unario .)
+    IGUAL           reduce using rule 50 (unario -> NO unario .)
+    DISTINTO        reduce using rule 50 (unario -> NO unario .)
+    AND             reduce using rule 50 (unario -> NO unario .)
+    PUNTOCOMA       reduce using rule 50 (unario -> NO unario .)
+    OR              reduce using rule 50 (unario -> NO unario .)
+    PARDER          reduce using rule 50 (unario -> NO unario .)
+
+
+state 81
+
+    (53) factor -> PARIZQ exp_bool . PARDER
+    (31) exp_bool -> exp_bool . OR comb
+
+    PARDER          shift and go to state 96
+    OR              shift and go to state 66
+
+
+state 82
+
+    (9) list_id -> list_id COMA ID .
+
+    PUNTOCOMA       reduce using rule 9 (list_id -> list_id COMA ID .)
+    COMA            reduce using rule 9 (list_id -> list_id COMA ID .)
+
+
+state 83
+
+    (22) sent_if -> SI PARIZQ exp_bool PARDER . bloque SINO bloque FSI
+    (23) sent_if -> SI PARIZQ exp_bool PARDER . bloque FSI
+    (28) bloque -> . LLAVIZQ list_sent LLAVDER
+
+    LLAVIZQ         shift and go to state 11
+
+    bloque                         shift and go to state 97
+
+state 84
+
+    (24) sent_while -> MIENTRAS PARIZQ exp_bool PARDER . bloque
+    (28) bloque -> . LLAVIZQ list_sent LLAVDER
+
+    LLAVIZQ         shift and go to state 11
+
+    bloque                         shift and go to state 98
+
+state 85
+
+    (25) sent_do -> HACER bloque HASTA PARIZQ . exp_bool PARDER PUNTOCOMA
+    (31) exp_bool -> . exp_bool OR comb
+    (32) exp_bool -> . comb
+    (33) comb -> . comb AND igualdad
+    (34) comb -> . igualdad
+    (35) igualdad -> . igualdad IGUAL rel
+    (36) igualdad -> . igualdad DISTINTO rel
+    (37) igualdad -> . rel
+    (38) rel -> . expr op_rel expr
+    (39) rel -> . expr
+    (44) expr -> . expr SUMA term
+    (45) expr -> . expr RESTA term
+    (46) expr -> . term
+    (47) term -> . term MULT unario
+    (48) term -> . term DIV unario
+    (49) term -> . unario
+    (50) unario -> . NO unario
+    (51) unario -> . RESTA unario
+    (52) unario -> . factor
+    (53) factor -> . PARIZQ exp_bool PARDER
+    (54) factor -> . ID
+    (55) factor -> . NUMERO
+    (56) factor -> . VERDADERO
+    (57) factor -> . FALSO
+
+    NO              shift and go to state 49
+    RESTA           shift and go to state 47
+    PARIZQ          shift and go to state 51
+    ID              shift and go to state 52
+    NUMERO          shift and go to state 53
+    VERDADERO       shift and go to state 54
+    FALSO           shift and go to state 55
+
+    exp_bool                       shift and go to state 99
+    comb                           shift and go to state 42
+    igualdad                       shift and go to state 43
+    rel                            shift and go to state 44
+    expr                           shift and go to state 45
+    term                           shift and go to state 46
+    unario                         shift and go to state 48
+    factor                         shift and go to state 50
+
+state 86
+
+    (29) sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .
+
+    LLAVDER         reduce using rule 29 (sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .)
+    SI              reduce using rule 29 (sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .)
+    MIENTRAS        reduce using rule 29 (sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .)
+    HACER           reduce using rule 29 (sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .)
+    LEER            reduce using rule 29 (sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .)
+    ESCRIBIR        reduce using rule 29 (sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .)
+    LLAVIZQ         reduce using rule 29 (sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .)
+    ID              reduce using rule 29 (sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .)
+    BREAK           reduce using rule 29 (sent_assign -> ID ASIGNACION exp_bool PUNTOCOMA .)
+
+
+state 87
+
+    (31) exp_bool -> exp_bool OR comb .
+    (33) comb -> comb . AND igualdad
+
+    PUNTOCOMA       reduce using rule 31 (exp_bool -> exp_bool OR comb .)
+    OR              reduce using rule 31 (exp_bool -> exp_bool OR comb .)
+    PARDER          reduce using rule 31 (exp_bool -> exp_bool OR comb .)
+    AND             shift and go to state 67
+
+
+state 88
+
+    (33) comb -> comb AND igualdad .
+    (35) igualdad -> igualdad . IGUAL rel
+    (36) igualdad -> igualdad . DISTINTO rel
+
+    AND             reduce using rule 33 (comb -> comb AND igualdad .)
+    PUNTOCOMA       reduce using rule 33 (comb -> comb AND igualdad .)
+    OR              reduce using rule 33 (comb -> comb AND igualdad .)
+    PARDER          reduce using rule 33 (comb -> comb AND igualdad .)
+    IGUAL           shift and go to state 68
+    DISTINTO        shift and go to state 69
+
+
+state 89
+
+    (35) igualdad -> igualdad IGUAL rel .
+
+    IGUAL           reduce using rule 35 (igualdad -> igualdad IGUAL rel .)
+    DISTINTO        reduce using rule 35 (igualdad -> igualdad IGUAL rel .)
+    AND             reduce using rule 35 (igualdad -> igualdad IGUAL rel .)
+    PUNTOCOMA       reduce using rule 35 (igualdad -> igualdad IGUAL rel .)
+    OR              reduce using rule 35 (igualdad -> igualdad IGUAL rel .)
+    PARDER          reduce using rule 35 (igualdad -> igualdad IGUAL rel .)
+
+
+state 90
+
+    (36) igualdad -> igualdad DISTINTO rel .
+
+    IGUAL           reduce using rule 36 (igualdad -> igualdad DISTINTO rel .)
+    DISTINTO        reduce using rule 36 (igualdad -> igualdad DISTINTO rel .)
+    AND             reduce using rule 36 (igualdad -> igualdad DISTINTO rel .)
+    PUNTOCOMA       reduce using rule 36 (igualdad -> igualdad DISTINTO rel .)
+    OR              reduce using rule 36 (igualdad -> igualdad DISTINTO rel .)
+    PARDER          reduce using rule 36 (igualdad -> igualdad DISTINTO rel .)
+
+
+state 91
+
+    (38) rel -> expr op_rel expr .
+    (44) expr -> expr . SUMA term
+    (45) expr -> expr . RESTA term
+
+    IGUAL           reduce using rule 38 (rel -> expr op_rel expr .)
+    DISTINTO        reduce using rule 38 (rel -> expr op_rel expr .)
+    AND             reduce using rule 38 (rel -> expr op_rel expr .)
+    PUNTOCOMA       reduce using rule 38 (rel -> expr op_rel expr .)
+    OR              reduce using rule 38 (rel -> expr op_rel expr .)
+    PARDER          reduce using rule 38 (rel -> expr op_rel expr .)
+    SUMA            shift and go to state 71
+    RESTA           shift and go to state 72
+
+
+state 92
+
+    (44) expr -> expr SUMA term .
+    (47) term -> term . MULT unario
+    (48) term -> term . DIV unario
+
+    SUMA            reduce using rule 44 (expr -> expr SUMA term .)
+    RESTA           reduce using rule 44 (expr -> expr SUMA term .)
+    MENOR           reduce using rule 44 (expr -> expr SUMA term .)
+    MENORIGUAL      reduce using rule 44 (expr -> expr SUMA term .)
+    MAYOR           reduce using rule 44 (expr -> expr SUMA term .)
+    MAYORIGUAL      reduce using rule 44 (expr -> expr SUMA term .)
+    IGUAL           reduce using rule 44 (expr -> expr SUMA term .)
+    DISTINTO        reduce using rule 44 (expr -> expr SUMA term .)
+    AND             reduce using rule 44 (expr -> expr SUMA term .)
+    PUNTOCOMA       reduce using rule 44 (expr -> expr SUMA term .)
+    OR              reduce using rule 44 (expr -> expr SUMA term .)
+    PARDER          reduce using rule 44 (expr -> expr SUMA term .)
+    MULT            shift and go to state 77
+    DIV             shift and go to state 78
+
+
+state 93
+
+    (45) expr -> expr RESTA term .
+    (47) term -> term . MULT unario
+    (48) term -> term . DIV unario
+
+    SUMA            reduce using rule 45 (expr -> expr RESTA term .)
+    RESTA           reduce using rule 45 (expr -> expr RESTA term .)
+    MENOR           reduce using rule 45 (expr -> expr RESTA term .)
+    MENORIGUAL      reduce using rule 45 (expr -> expr RESTA term .)
+    MAYOR           reduce using rule 45 (expr -> expr RESTA term .)
+    MAYORIGUAL      reduce using rule 45 (expr -> expr RESTA term .)
+    IGUAL           reduce using rule 45 (expr -> expr RESTA term .)
+    DISTINTO        reduce using rule 45 (expr -> expr RESTA term .)
+    AND             reduce using rule 45 (expr -> expr RESTA term .)
+    PUNTOCOMA       reduce using rule 45 (expr -> expr RESTA term .)
+    OR              reduce using rule 45 (expr -> expr RESTA term .)
+    PARDER          reduce using rule 45 (expr -> expr RESTA term .)
+    MULT            shift and go to state 77
+    DIV             shift and go to state 78
+
+
+state 94
+
+    (47) term -> term MULT unario .
+
+    MULT            reduce using rule 47 (term -> term MULT unario .)
+    DIV             reduce using rule 47 (term -> term MULT unario .)
+    SUMA            reduce using rule 47 (term -> term MULT unario .)
+    RESTA           reduce using rule 47 (term -> term MULT unario .)
+    MENOR           reduce using rule 47 (term -> term MULT unario .)
+    MENORIGUAL      reduce using rule 47 (term -> term MULT unario .)
+    MAYOR           reduce using rule 47 (term -> term MULT unario .)
+    MAYORIGUAL      reduce using rule 47 (term -> term MULT unario .)
+    IGUAL           reduce using rule 47 (term -> term MULT unario .)
+    DISTINTO        reduce using rule 47 (term -> term MULT unario .)
+    AND             reduce using rule 47 (term -> term MULT unario .)
+    PUNTOCOMA       reduce using rule 47 (term -> term MULT unario .)
+    OR              reduce using rule 47 (term -> term MULT unario .)
+    PARDER          reduce using rule 47 (term -> term MULT unario .)
+
+
+state 95
+
+    (48) term -> term DIV unario .
+
+    MULT            reduce using rule 48 (term -> term DIV unario .)
+    DIV             reduce using rule 48 (term -> term DIV unario .)
+    SUMA            reduce using rule 48 (term -> term DIV unario .)
+    RESTA           reduce using rule 48 (term -> term DIV unario .)
+    MENOR           reduce using rule 48 (term -> term DIV unario .)
+    MENORIGUAL      reduce using rule 48 (term -> term DIV unario .)
+    MAYOR           reduce using rule 48 (term -> term DIV unario .)
+    MAYORIGUAL      reduce using rule 48 (term -> term DIV unario .)
+    IGUAL           reduce using rule 48 (term -> term DIV unario .)
+    DISTINTO        reduce using rule 48 (term -> term DIV unario .)
+    AND             reduce using rule 48 (term -> term DIV unario .)
+    PUNTOCOMA       reduce using rule 48 (term -> term DIV unario .)
+    OR              reduce using rule 48 (term -> term DIV unario .)
+    PARDER          reduce using rule 48 (term -> term DIV unario .)
+
+
+state 96
+
+    (53) factor -> PARIZQ exp_bool PARDER .
+
+    MULT            reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    DIV             reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    SUMA            reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    RESTA           reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    MENOR           reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    MENORIGUAL      reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    MAYOR           reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    MAYORIGUAL      reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    IGUAL           reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    DISTINTO        reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    AND             reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    PUNTOCOMA       reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    OR              reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+    PARDER          reduce using rule 53 (factor -> PARIZQ exp_bool PARDER .)
+
+
+state 97
+
+    (22) sent_if -> SI PARIZQ exp_bool PARDER bloque . SINO bloque FSI
+    (23) sent_if -> SI PARIZQ exp_bool PARDER bloque . FSI
+
+    SINO            shift and go to state 100
+    FSI             shift and go to state 101
+
+
+state 98
+
+    (24) sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .
+
+    LLAVDER         reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    SI              reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    MIENTRAS        reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    HACER           reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    LEER            reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    ESCRIBIR        reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    LLAVIZQ         reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    ID              reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+    BREAK           reduce using rule 24 (sent_while -> MIENTRAS PARIZQ exp_bool PARDER bloque .)
+
+
+state 99
+
+    (25) sent_do -> HACER bloque HASTA PARIZQ exp_bool . PARDER PUNTOCOMA
+    (31) exp_bool -> exp_bool . OR comb
+
+    PARDER          shift and go to state 102
+    OR              shift and go to state 66
+
+
+state 100
+
+    (22) sent_if -> SI PARIZQ exp_bool PARDER bloque SINO . bloque FSI
+    (28) bloque -> . LLAVIZQ list_sent LLAVDER
+
+    LLAVIZQ         shift and go to state 11
+
+    bloque                         shift and go to state 103
+
+state 101
+
+    (23) sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .
+
+    LLAVDER         reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .)
+    SI              reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .)
+    MIENTRAS        reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .)
+    HACER           reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .)
+    LEER            reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .)
+    ESCRIBIR        reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .)
+    LLAVIZQ         reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .)
+    ID              reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .)
+    BREAK           reduce using rule 23 (sent_if -> SI PARIZQ exp_bool PARDER bloque FSI .)
+
+
+state 102
+
+    (25) sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 104
+
+
+state 103
+
+    (22) sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque . FSI
+
+    FSI             shift and go to state 105
+
+
+state 104
+
+    (25) sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .
+
+    LLAVDER         reduce using rule 25 (sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .)
+    SI              reduce using rule 25 (sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .)
+    MIENTRAS        reduce using rule 25 (sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .)
+    HACER           reduce using rule 25 (sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .)
+    LEER            reduce using rule 25 (sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .)
+    ESCRIBIR        reduce using rule 25 (sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .)
+    LLAVIZQ         reduce using rule 25 (sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .)
+    ID              reduce using rule 25 (sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .)
+    BREAK           reduce using rule 25 (sent_do -> HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA .)
+
+
+state 105
+
+    (22) sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .
+
+    LLAVDER         reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .)
+    SI              reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .)
+    MIENTRAS        reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .)
+    HACER           reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .)
+    LEER            reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .)
+    ESCRIBIR        reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .)
+    LLAVIZQ         reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .)
+    ID              reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .)
+    BREAK           reduce using rule 22 (sent_if -> SI PARIZQ exp_bool PARDER bloque SINO bloque FSI .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for ENTERO in state 3 resolved as shift
+WARNING: shift/reduce conflict for FLOTANTE in state 3 resolved as shift
+WARNING: shift/reduce conflict for BOOLEANO in state 3 resolved as shift
+WARNING: shift/reduce conflict for SI in state 4 resolved as shift
+WARNING: shift/reduce conflict for MIENTRAS in state 4 resolved as shift
+WARNING: shift/reduce conflict for HACER in state 4 resolved as shift
+WARNING: shift/reduce conflict for LEER in state 4 resolved as shift
+WARNING: shift/reduce conflict for ESCRIBIR in state 4 resolved as shift
+WARNING: shift/reduce conflict for LLAVIZQ in state 4 resolved as shift
+WARNING: shift/reduce conflict for ID in state 4 resolved as shift
+WARNING: shift/reduce conflict for BREAK in state 4 resolved as shift
+WARNING: shift/reduce conflict for SI in state 11 resolved as shift
+WARNING: shift/reduce conflict for MIENTRAS in state 11 resolved as shift
+WARNING: shift/reduce conflict for HACER in state 11 resolved as shift
+WARNING: shift/reduce conflict for LEER in state 11 resolved as shift
+WARNING: shift/reduce conflict for ESCRIBIR in state 11 resolved as shift
+WARNING: shift/reduce conflict for LLAVIZQ in state 11 resolved as shift
+WARNING: shift/reduce conflict for ID in state 11 resolved as shift
+WARNING: shift/reduce conflict for BREAK in state 11 resolved as shift
