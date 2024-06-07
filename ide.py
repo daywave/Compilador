@@ -6,7 +6,7 @@ import sintactico
 class IDE:
     def __init__(self, root):
         self.root = root
-        self.root.title("IDE - Compilador C")
+        self.root.title("IDE - Compilador Personal")
         self.root.geometry("1200x800")
         self.root.configure(bg='#282C34')
 
@@ -36,8 +36,8 @@ class IDE:
             'ENTERO': "#56B6C2",
             'BOOLEANO': "#56B6C2",
             'NO': "#56B6C2",
-            'Y': "#56B6C2",
-            'O': "#56B6C2",
+            'AND': "#56B6C2",
+            'OR': "#56B6C2",
             'VERDADERO': "#56B6C2",
             'FALSO': "#56B6C2",
             'SUMA': "#E06C75",
@@ -61,8 +61,7 @@ class IDE:
             'ID': "#61AFEF",
             'NUMERO': "#D19A66",
             'BREAK': "#E06C75",
-            'AND': "#E06C75",
-            'OR': "#E06C75"
+            'THEN': "#E06C75"
         }
 
         self.syntactic_text = None
@@ -150,11 +149,15 @@ class IDE:
 
         self.semantic_tab = tk.Frame(self.analysis_tabs, bg='#282C34')
         self.intermediate_code_tab = tk.Frame(self.analysis_tabs, bg='#282C34')
+        self.compilation_output_tab = tk.Frame(self.analysis_tabs, bg='#282C34')
+        self.compilation_output_text = tk.Text(self.compilation_output_tab, wrap="none", state="disabled", bg='#282C34', fg='#ABB2BF', insertbackground='#ABB2BF')
+        self.compilation_output_text.pack(fill="both", expand=True)
 
         self.analysis_tabs.add(self.lexical_tab, text="Análisis léxico")
         self.analysis_tabs.add(self.syntactic_tab, text="Análisis sintáctico")
         self.analysis_tabs.add(self.semantic_tab, text="Análisis semántico")
         self.analysis_tabs.add(self.intermediate_code_tab, text="Código intermedio")
+        self.analysis_tabs.add(self.compilation_output_tab, text="Salida de compilación")
 
     def create_error_tabs(self):
         self.error_tabs = ttk.Notebook(self.root)
@@ -214,10 +217,50 @@ class IDE:
     def paste_text(self):
         self.code_editor.event_generate("<<Paste>>")
 
+    def execute_code(self, code):
+        variables = {}
+        output = ""
+        for line in code.split('\n'):
+            line = line.split('//')[0]  # Remove single-line comments
+            line = line.split('/*')[0]  # Remove multi-line comments for simplicity
+            line = line.strip()
+            if line.startswith('write '):
+                var_name = line.split()[1].strip(';')
+                if var_name in variables:
+                    output += str(variables[var_name]) + '\n'
+            elif '=' in line:
+                parts = line.split('=')
+                if len(parts) == 2:
+                    var_name, value = parts
+                    var_name = var_name.strip()
+                    value = value.strip(';').strip()
+                    try:
+                        value = self.evaluate_expression(value)
+                    except ValueError:
+                        pass
+                    variables[var_name] = value
+        return output
+
+    def evaluate_expression(self, expression):
+        try:
+            return int(expression)
+        except ValueError:
+            pass
+        try:
+            return float(expression)
+        except ValueError:
+            pass
+        return expression
+
     def compile_code(self):
         code = self.code_editor.get("1.0", "end-1c")
         self.perform_lexical_analysis(code)
         self.perform_syntactic_analysis(code)
+        self.display_compilation_output("Compilación realizada con éxito")
+
+        # Ejecutar el código compilado y mostrar la salida
+        output = self.execute_code(code)
+        self.display_execution_output(output)
 
     def perform_lexical_analysis(self, code):
         self.lexer.input(code)
@@ -304,6 +347,16 @@ class IDE:
                     self.file_path = file_path
             except Exception as e:
                 messagebox.showerror("Error", str(e))
+
+    def display_execution_output(self, output):
+        self.execution_result_tab = tk.Frame(self.error_tabs, bg='#282C34')
+        self.execution_result_text = tk.Text(self.execution_result_tab, wrap="none", state="normal", bg='#282C34',
+                                             fg='#ABB2BF', insertbackground='#ABB2BF')
+        self.execution_result_text.pack(fill="both", expand=True)
+        self.execution_result_text.delete("1.0", "end")
+        self.execution_result_text.insert("end", output)
+        self.execution_result_text.config(state="disabled")
+        self.error_tabs.add(self.execution_result_tab, text="Resultado ejecución")
 
 if __name__ == "__main__":
     root = tk.Tk()

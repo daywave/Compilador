@@ -10,14 +10,11 @@ def p_programa(p):
 
 def p_list_decl(p):
     '''
-    list_decl : list_decl decl
-              | decl
+    list_decl : decl list_decl
               | empty
     '''
     if len(p) == 3:
-        p[0] = p[1] + [p[2]]
-    elif len(p) == 2:
-        p[0] = [p[1]]
+        p[0] = [p[1]] + p[2]
     else:
         p[0] = []
 
@@ -37,24 +34,21 @@ def p_tipo(p):
 
 def p_list_id(p):
     '''
-    list_id : list_id COMA ID
+    list_id : ID COMA list_id
             | ID
     '''
     if len(p) == 4:
-        p[0] = p[1] + [p[3]]
+        p[0] = [p[1]] + p[3]
     else:
         p[0] = [p[1]]
 
 def p_list_sent(p):
     '''
-    list_sent : list_sent sent
-              | sent
+    list_sent : sent list_sent
               | empty
     '''
     if len(p) == 3:
-        p[0] = p[1] + [p[2]]
-    elif len(p) == 2:
-        p[0] = [p[1]]
+        p[0] = [p[1]] + p[2]
     else:
         p[0] = []
 
@@ -73,13 +67,13 @@ def p_sent(p):
 
 def p_sent_if(p):
     '''
-    sent_if : SI PARIZQ exp_bool PARDER bloque SINO bloque FSI
-            | SI PARIZQ exp_bool PARDER bloque FSI
+    sent_if : SI PARIZQ exp_bool PARDER THEN bloque FSI
+            | SI PARIZQ exp_bool PARDER THEN bloque SINO bloque FSI
     '''
-    if len(p) == 9:
-        p[0] = ('sent_if', p[3], p[5], p[7])
+    if len(p) == 8:
+        p[0] = ('sent_if', p[3], p[5])
     else:
-        p[0] = ('sent_if', p[3], p[5], None)
+        p[0] = ('sent_if', p[3], p[5], p[7])
 
 def p_sent_while(p):
     '''
@@ -159,22 +153,16 @@ def p_igualdad(p):
 
 def p_rel(p):
     '''
-    rel : expr op_rel expr
+    rel : expr MENOR expr
+        | expr MAYOR expr
+        | expr MENORIGUAL expr
+        | expr MAYORIGUAL expr
         | expr
     '''
     if len(p) == 4:
         p[0] = ('rel', p[1], p[2], p[3])
     else:
         p[0] = p[1]
-
-def p_op_rel(p):
-    '''
-    op_rel : MENOR
-           | MENORIGUAL
-           | MAYOR
-           | MAYORIGUAL
-    '''
-    p[0] = p[1]
 
 def p_expr(p):
     '''

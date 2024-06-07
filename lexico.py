@@ -4,10 +4,10 @@ import ply.lex as lex
 tokens = [
     'PROGRAMA', 'SI', 'SINO', 'FSI', 'HACER', 'HASTA', 'MIENTRAS',
     'LEER', 'ESCRIBIR', 'FLOTANTE', 'ENTERO', 'BOOLEANO', 'NO',
-    'Y', 'O', 'VERDADERO', 'FALSO', 'SUMA', 'RESTA', 'MULT',
+    'AND', 'OR', 'VERDADERO', 'FALSO', 'SUMA', 'RESTA', 'MULT',
     'DIV', 'POTENCIA', 'MENOR', 'MENORIGUAL', 'MAYOR', 'MAYORIGUAL',
     'IGUAL', 'DISTINTO', 'ASIGNACION', 'PUNTOCOMA', 'COMA', 'PARIZQ',
-    'PARDER', 'LLAVIZQ', 'LLAVDER', 'ID', 'NUMERO', 'BREAK', 'AND', 'OR'
+    'PARDER', 'LLAVIZQ', 'LLAVDER', 'ID', 'NUMERO', 'BREAK', 'THEN'
 ]
 
 # Definición de palabras reservadas
@@ -25,11 +25,12 @@ reservadas = {
     'int': 'ENTERO',
     'bool': 'BOOLEANO',
     'not': 'NO',
-    'and': 'Y',
-    'or': 'O',
+    'and': 'AND',
+    'or': 'OR',
     'true': 'VERDADERO',
     'false': 'FALSO',
-    'break': 'BREAK'
+    'break': 'BREAK',
+    'then': 'THEN'
 }
 
 # Expresiones regulares para tokens simples
@@ -55,8 +56,7 @@ t_LLAVDER = r'\}'
 # Expresiones regulares para tokens compuestos
 def t_ID(t):
     r'[a-zA-Z][a-zA-Z0-9_]*'
-    if t.value in reservadas:
-        t.type = reservadas[t.value]
+    t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
     return t
 
 def t_NUMERO(t):
@@ -68,7 +68,17 @@ def t_NUMERO(t):
         t.value = 0
     return t
 
-# Regla para ignorar espacios en blanco
+# Comentarios de una sola línea
+def t_COMENTARIO_UNA_LINEA(t):
+    r'//.*'
+    pass  # Ignorar comentarios de una sola línea
+
+# Comentarios de múltiples líneas
+def t_COMENTARIO_MULTILINEA(t):
+    r'/\*[\s\S]*?\*/'
+    pass  # Ignorar comentarios de múltiples líneas
+
+# Regla para ignorar espacios en blanco y tabulaciones
 t_ignore = ' \t'
 
 # Regla para manejar saltos de línea
@@ -94,4 +104,3 @@ def analizar(data):
             break
         tokens_encontrados.append(tok)
     return tokens_encontrados
-
