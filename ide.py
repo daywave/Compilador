@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
+from tkinterdnd2 import TkinterDnD, DND_FILES
+import os
 import lexico  # Importa el módulo lexico que contiene el lexer
 import sintactico
 
@@ -14,10 +16,12 @@ class IDE:
         self.lexer = lexico.lexer
 
         self.create_menu_bar()
+        self.create_main_layout()
         self.create_code_editor()
         self.create_analysis_tabs()
         self.create_error_tabs()
         self.create_status_bar()
+        self.configure_drag_and_drop()
 
         self.file_path = None  # Para rastrear el archivo actual
 
@@ -70,7 +74,7 @@ class IDE:
         menu_bar = tk.Menu(self.root, bg='#21252B', fg='#ABB2BF', activebackground='#61AFEF', activeforeground='#282C34')
         file_menu = tk.Menu(menu_bar, tearoff=0, bg='#21252B', fg='#ABB2BF')
         file_menu.add_command(label="Nuevo", command=self.new_file)
-        file_menu.add_command(label="Abrir", command=self.open_file)
+        file_menu.add_command(label="Abrir", command=self.open_file_dialog)
         file_menu.add_command(label="Guardar", command=self.save_file)
         file_menu.add_command(label="Guardar como", command=self.save_as_file)
         file_menu.add_command(label="Cerrar", command=self.close_file)
@@ -88,10 +92,246 @@ class IDE:
         run_menu.add_command(label="Compilar", command=self.compile_code)
         menu_bar.add_cascade(label="Ejecutar", menu=run_menu)
 
+        settings_menu = tk.Menu(menu_bar, tearoff=0, bg='#21252B', fg='#ABB2BF')
+        settings_menu.add_command(label="Configuración de tema", command=self.open_theme_config)
+        menu_bar.add_cascade(label="Configuración", menu=settings_menu)
+
         self.root.config(menu=menu_bar)
 
+    def open_theme_config(self):
+        self.theme_window = tk.Toplevel(self.root)
+        self.theme_window.title("Configuración")
+        self.theme_window.geometry("600x400")
+        self.theme_window.configure(bg='#282C34')
+
+        theme_frame = tk.Frame(self.theme_window, bg='#282C34')
+        theme_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        theme_label = tk.Label(theme_frame, text="Selecciona un tema de color:", bg='#282C34', fg='#ABB2BF')
+        theme_label.pack(pady=10)
+
+        themes = [
+            ("Periwinkle", {
+                'PROGRAMA': "#9A9CEA",  # Periwinkle
+                'SI': "#9A9CEA",  # Periwinkle
+                'SINO': "#9A9CEA",  # Periwinkle
+                'FSI': "#9A9CEA",  # Periwinkle
+                'HACER': "#9A9CEA",  # Periwinkle
+                'HASTA': "#9A9CEA",  # Periwinkle
+                'MIENTRAS': "#9A9CEA",  # Periwinkle
+                'LEER': "#9A9CEA",  # Periwinkle
+                'ESCRIBIR': "#9A9CEA",  # Periwinkle
+                'FLOTANTE': "#A2B9EE",  # Periwinkle
+                'ENTERO': "#A2B9EE",  # Periwinkle
+                'BOOLEANO': "#A2DCEE",  # Periwinkle
+                'NO': "#9A9CEA",  # Periwinkle
+                'Y': "#9A9CEA",  # Periwinkle
+                'O': "#9A9CEA",  # Periwinkle
+                'VERDADERO': "#ADEEE2",  # Periwinkle
+                'FALSO': "#ADEEE2",  # Periwinkle
+                'SUMA': "#9A9CEA",  # Periwinkle
+                'RESTA': "#9A9CEA",  # Periwinkle
+                'MULT': "#9A9CEA",  # Periwinkle
+                'DIV': "#9A9CEA",  # Periwinkle
+                'POTENCIA': "#9A9CEA",  # Periwinkle
+                'MENOR': "#9A9CEA",  # Periwinkle
+                'MENORIGUAL': "#9A9CEA",  # Periwinkle
+                'MAYOR': "#9A9CEA",  # Periwinkle
+                'MAYORIGUAL': "#9A9CEA",  # Periwinkle
+                'IGUAL': "#9A9CEA",  # Periwinkle
+                'DISTINTO': "#9A9CEA",  # Periwinkle
+                'ASIGNACION': "#9A9CEA",  # Periwinkle
+                'PUNTOCOMA': "#9A9CEA",  # Periwinkle
+                'COMA': "#9A9CEA",  # Periwinkle
+                'PARIZQ': "#9A9CEA",  # Periwinkle
+                'PARDER': "#9A9CEA",  # Periwinkle
+                'LLAVIZQ': "#9A9CEA",  # Periwinkle
+                'LLAVDER': "#9A9CEA",  # Periwinkle
+                'ID': "#A2DCEE",  # Periwinkle
+                'NUMERO': "#ADEEE2",  # Periwinkle
+                'BREAK': "#9A9CEA",  # Periwinkle
+                'AND': "#9A9CEA",  # Periwinkle
+                'OR': "#9A9CEA",  # Periwinkle
+                'COMMENT': "#A2B9EE",  # Periwinkle
+            }),
+            ("Dracula", {
+                'PROGRAMA': "#FF79C6",  # Keywords
+                'SI': "#FF79C6",  # Keywords
+                'SINO': "#FF79C6",  # Keywords
+                'FSI': "#FF79C6",  # Keywords
+                'HACER': "#FF79C6",  # Keywords
+                'HASTA': "#FF79C6",  # Keywords
+                'MIENTRAS': "#FF79C6",  # Keywords
+                'LEER': "#FF79C6",  # Keywords
+                'ESCRIBIR': "#FF79C6",  # Keywords
+                'FLOTANTE': "#8BE9FD",  # String
+                'ENTERO': "#8BE9FD",  # String
+                'BOOLEANO': "#BD93F9",  # Types
+                'NO': "#FF79C6",  # Keywords
+                'Y': "#FF79C6",  # Keywords
+                'O': "#FF79C6",  # Keywords
+                'VERDADERO': "#50FA7B",  # Types
+                'FALSO': "#50FA7B",  # Types
+                'SUMA': "#FF79C6",  # Keywords
+                'RESTA': "#FF79C6",  # Keywords
+                'MULT': "#FF79C6",  # Keywords
+                'DIV': "#FF79C6",  # Keywords
+                'POTENCIA': "#FF79C6",  # Keywords
+                'MENOR': "#FF79C6",  # Keywords
+                'MENORIGUAL': "#FF79C6",  # Keywords
+                'MAYOR': "#FF79C6",  # Keywords
+                'MAYORIGUAL': "#FF79C6",  # Keywords
+                'IGUAL': "#FF79C6",  # Keywords
+                'DISTINTO': "#FF79C6",  # Keywords
+                'ASIGNACION': "#FF79C6",  # Keywords
+                'PUNTOCOMA': "#FF79C6",  # Keywords
+                'COMA': "#FF79C6",  # Keywords
+                'PARIZQ': "#FF79C6",  # Keywords
+                'PARDER': "#FF79C6",  # Keywords
+                'LLAVIZQ': "#FF79C6",  # Keywords
+                'LLAVDER': "#FF79C6",  # Keywords
+                'ID': "#BD93F9",  # Types
+                'NUMERO': "#8BE9FD",  # String
+                'BREAK': "#FF79C6",  # Keywords
+                'AND': "#FF79C6",  # Keywords
+                'OR': "#FF79C6",  # Keywords
+                'COMMENT': "#6272A4",  # Comment
+            }),
+            ("Light Pastel", {
+                'PROGRAMA': "#A8A8FF",  # Light Pastel Purple
+                'SI': "#A8A8FF",  # Light Pastel Purple
+                'SINO': "#A8A8FF",  # Light Pastel Purple
+                'FSI': "#A8A8FF",  # Light Pastel Purple
+                'HACER': "#A8A8FF",  # Light Pastel Purple
+                'HASTA': "#A8A8FF",  # Light Pastel Purple
+                'MIENTRAS': "#A8A8FF",  # Light Pastel Purple
+                'LEER': "#A8A8FF",  # Light Pastel Purple
+                'ESCRIBIR': "#A8A8FF",  # Light Pastel Purple
+                'FLOTANTE': "#FFB6C1",  # Light Pink
+                'ENTERO': "#FFB6C1",  # Light Pink
+                'BOOLEANO': "#FFB6C1",  # Light Pink
+                'NO': "#FFB6C1",  # Light Pink
+                'Y': "#FFB6C1",  # Light Pink
+                'O': "#FFB6C1",  # Light Pink
+                'VERDADERO': "#98FB98",  # Light Green
+                'FALSO': "#98FB98",  # Light Green
+                'SUMA': "#FFB6C1",  # Light Pink
+                'RESTA': "#FFB6C1",  # Light Pink
+                'MULT': "#FFB6C1",  # Light Pink
+                'DIV': "#FFB6C1",  # Light Pink
+                'POTENCIA': "#FFB6C1",  # Light Pink
+                'MENOR': "#FFB6C1",  # Light Pink
+                'MENORIGUAL': "#FFB6C1",  # Light Pink
+                'MAYOR': "#FFB6C1",  # Light Pink
+                'MAYORIGUAL': "#FFB6C1",  # Light Pink
+                'IGUAL': "#FFB6C1",  # Light Pink
+                'DISTINTO': "#FFB6C1",  # Light Pink
+                'ASIGNACION': "#FFB6C1",  # Light Pink
+                'PUNTOCOMA': "#FFB6C1",  # Light Pink
+                'COMA': "#FFB6C1",  # Light Pink
+                'PARIZQ': "#FFB6C1",  # Light Pink
+                'PARDER': "#FFB6C1",  # Light Pink
+                'LLAVIZQ': "#FFB6C1",  # Light Pink
+                'LLAVDER': "#FFB6C1",  # Light Pink
+                'ID': "#A8A8FF",  # Light Pastel Purple
+                'NUMERO': "#FFB6C1",  # Light Pink
+                'BREAK': "#FFB6C1",  # Light Pink
+                'AND': "#FFB6C1",  # Light Pink
+                'OR': "#FFB6C1",  # Light Pink
+                'COMMENT': "#A8A8FF",  # Light Pastel Purple
+            }),
+        ]
+
+        self.example_code = """program {
+    int x, y;
+    x = 0;
+    y = 0;
+    while (x < y) {
+        x = x + 1;
+    }
+    return x;
+}"""
+
+        def change_theme(theme_colors):
+            self.apply_theme(theme_colors)
+
+        for theme_name, theme_colors in themes:
+            theme_button = tk.Button(theme_frame, text=theme_name, bg='#21252B', fg='#ABB2BF',
+                                     command=lambda tc=theme_colors: change_theme(tc))
+            theme_button.pack(fill="x", pady=5)
+
+        self.example_code_editor = tk.Text(theme_frame, wrap="none", undo=True, bg='#282C34', fg='#ABB2BF', insertbackground='#ABB2BF')
+        self.example_code_editor.pack(fill="both", expand=True, padx=10)
+        self.example_code_editor.insert("1.0", self.example_code)
+        self.example_code_editor.config(state="disabled")
+
+        self.update_example_syntax()
+
+    def apply_theme(self, theme_colors):
+        self.token_colors = theme_colors
+        self.highlight_syntax(self.code_editor.get("1.0", "end-1c"))
+        self.update_example_syntax()
+
+    def update_example_syntax(self):
+        self.example_code_editor.config(state="normal")
+        self.example_code_editor.delete("1.0", "end")
+        self.example_code_editor.insert("1.0", self.example_code)
+        self.highlight_example_syntax(self.example_code_editor.get("1.0", "end-1c"))
+        self.example_code_editor.config(state="disabled")
+
+    def highlight_example_syntax(self, code):
+        self.clear_example_tags()
+        tokens = self.perform_lexical_analysis(code)
+        for token in tokens:
+            start_index = f"1.0+{token.lexpos}c"
+            end_index = f"1.0+{token.lexpos + len(str(token.value))}c"
+            color = self.token_colors.get(token.type, "#FFFFFF")
+            self.example_code_editor.tag_add(token.type, start_index, end_index)
+            self.example_code_editor.tag_config(token.type, foreground=color)
+
+    def clear_example_tags(self):
+        for tag in self.example_code_editor.tag_names():
+            self.example_code_editor.tag_remove(tag, "1.0", tk.END)
+
+    def create_main_layout(self):
+        self.main_frame = tk.Frame(self.root, bg='#282C34')
+        self.main_frame.pack(fill="both", expand=True)
+
+        self.left_pane = tk.Frame(self.main_frame, bg='#21252B')
+        self.left_pane.pack(side="left", fill="y")
+
+        self.right_pane = tk.Frame(self.main_frame, bg='#282C34')
+        self.right_pane.pack(side="left", fill="both", expand=True)
+
+        self.create_file_tree()
+
+    def create_file_tree(self):
+        self.tree = ttk.Treeview(self.left_pane)
+        self.tree.pack(fill="y", expand=True)
+        self.tree.bind("<Double-1>", self.on_tree_item_double_click)
+        self.populate_tree(self.tree, os.getcwd())
+
+    def populate_tree(self, tree, path):
+        abspath = os.path.abspath(path)
+        parent = ''
+        self.insert_node(tree, parent, abspath)
+
+    def insert_node(self, tree, parent, path):
+        text = os.path.basename(path)
+        oid = tree.insert(parent, 'end', text=text, open=False)
+        if os.path.isdir(path):
+            for p in os.listdir(path):
+                self.insert_node(tree, oid, os.path.join(path, p))
+
+    def on_tree_item_double_click(self, event):
+        item_id = self.tree.focus()
+        item_text = self.tree.item(item_id, "text")
+        path = os.path.abspath(item_text)
+        if os.path.isfile(path):
+            self.open_file(path)
+
     def create_code_editor(self):
-        self.code_editor_frame = tk.Frame(self.root, bg='#282C34')
+        self.code_editor_frame = tk.Frame(self.right_pane, bg='#282C34')
         self.code_editor_frame.pack(fill="both", expand=True)
 
         self.line_numbers = tk.Text(self.code_editor_frame, width=4, padx=3, takefocus=0, border=0, background='#2C313C', fg='#ABB2BF', state='disabled')
@@ -132,7 +372,7 @@ class IDE:
         self.update_line_numbers()
 
     def create_analysis_tabs(self):
-        self.analysis_tabs = ttk.Notebook(self.root)
+        self.analysis_tabs = ttk.Notebook(self.right_pane)
         self.analysis_tabs.pack(fill="both", expand=True)
 
         self.lexical_tab = tk.Frame(self.analysis_tabs, bg='#282C34')
@@ -160,7 +400,7 @@ class IDE:
         self.analysis_tabs.add(self.compilation_output_tab, text="Salida de compilación")
 
     def create_error_tabs(self):
-        self.error_tabs = ttk.Notebook(self.root)
+        self.error_tabs = ttk.Notebook(self.right_pane)
         self.error_tabs.pack(fill="both", expand=True)
 
         self.error_tab = tk.Frame(self.error_tabs, bg='#282C34')
@@ -187,6 +427,7 @@ class IDE:
                     content = self.code_editor.get("1.0", "end-1c")
                     file.write(content)
                     messagebox.showinfo("Guardar", "Archivo guardado con éxito")
+                    self.populate_tree(self.tree, os.getcwd())  # Actualizar el árbol de archivos
             except Exception as e:
                 messagebox.showerror("Error", str(e))
         else:
@@ -201,6 +442,7 @@ class IDE:
                     file.write(content)
                     self.file_path = file_path  # Actualizar la ruta del archivo actual
                     messagebox.showinfo("Guardar como", "Archivo guardado con éxito")
+                    self.populate_tree(self.tree, os.getcwd())  # Actualizar el árbol de archivos
             except Exception as e:
                 messagebox.showerror("Error", str(e))
 
@@ -336,15 +578,20 @@ class IDE:
         self.code_editor.delete("1.0", "end")
         self.file_path = None
 
-    def open_file(self):
+    def open_file_dialog(self):
         file_path = filedialog.askopenfilename(defaultextension=".c", filetypes=[("C Files", "*.c"), ("All Files", "*.*")])
         if file_path:
+            self.open_file(file_path)
+
+    def open_file(self, file_path):
+        if os.path.isfile(file_path):
             try:
                 with open(file_path, "r") as file:
                     content = file.read()
                     self.code_editor.delete("1.0", "end")
                     self.code_editor.insert("1.0", content)
                     self.file_path = file_path
+                    self.populate_tree(self.tree, os.getcwd())  # Actualizar el árbol de archivos
             except Exception as e:
                 messagebox.showerror("Error", str(e))
 
@@ -358,7 +605,22 @@ class IDE:
         self.execution_result_text.config(state="disabled")
         self.error_tabs.add(self.execution_result_tab, text="Resultado ejecución")
 
+    def display_compilation_output(self, message):
+        self.compilation_output_text.config(state="normal")
+        self.compilation_output_text.delete("1.0", "end")
+        self.compilation_output_text.insert("end", message)
+        self.compilation_output_text.config(state="disabled")
+
+    def configure_drag_and_drop(self):
+        self.root.drop_target_register(DND_FILES)
+        self.root.dnd_bind('<<Drop>>', self.on_drop)
+
+    def on_drop(self, event):
+        file_path = event.data
+        self.open_file(file_path)
+
+
 if __name__ == "__main__":
-    root = tk.Tk()
+    root = TkinterDnD.Tk()
     app = IDE(root)
     root.mainloop()
