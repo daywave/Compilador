@@ -5,8 +5,12 @@ from lexico import tokens
 def p_programa(p):
     '''
     programa : PROGRAMA LLAVIZQ list_decl list_sent LLAVDER
+             | error LLAVDER
     '''
-    p[0] = ('programa', p[3], p[4])
+    if len(p) == 6:
+        p[0] = ('programa', p[3], p[4])
+    else:
+        print("Error de sintaxis en 'programa'")
 
 def p_list_decl(p):
     '''
@@ -46,9 +50,13 @@ def p_list_sent(p):
     '''
     list_sent : sent list_sent
               | empty
+              | error PUNTOCOMA list_sent
     '''
     if len(p) == 3:
         p[0] = [p[1]] + p[2]
+    elif len(p) == 4:
+        print("Error de sintaxis en 'list_sent'")
+        p[0] = p[3]
     else:
         p[0] = []
 
@@ -226,7 +234,12 @@ def p_empty(p):
     p[0] = None
 
 def p_error(p):
-    print(f"Error de sintaxis: {p}")
+    if p:
+        print(f"Error de sintaxis en token {p.type} en la línea {p.lineno}, columna {p.lexpos}")
+        # Descartar el token erróneo y continuar
+        parser.errok()
+    else:
+        print("Error de sintaxis en EOF")
 
 # Construir el analizador sintáctico
 parser = yacc.yacc()
