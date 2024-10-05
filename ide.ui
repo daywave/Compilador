@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+        <class>MainWindow</class>
+        <widget class="QMainWindow" name="MainWindow">
+                <property name="geometry">
+                        <rect>
+                                <x>0</x>
+                                <y>0</y>
+                                <width>944</width>
+                                <height>661</height>
+                        </rect>
+                </property>
+                <property name="windowTitle">
+                        <string>MainWindow</string>
+                </property>
+                <widget class="QWidget" name="centralwidget">
+                        <widget class="QTextEdit" name="seccionCodigo">
+                                <property name="geometry">
+                                        <rect>
+                                                <x>0</x>
+                                                <y>0</y>
+                                                <width>551</width>
+                                                <height>441</height>
+                                        </rect>
+                                </property>
+                                <property name="font">
+                                        <font>
+                                                <pointsize>12</pointsize>
+                                        </font>
+                                </property>
+                        </widget>
+                        <widget class="QTabWidget" name="tabWidget">
+                                <property name="geometry">
+                                        <rect>
+                                                <x>550</x>
+                                                <y>-10</y>
+                                                <width>391</width>
+                                                <height>441</height>
+                                        </rect>
+                                </property>
+                                <property name="font">
+                                        <font>
+                                                <pointsize>10</pointsize>
+                                        </font>
+                                </property>
+                                <property name="currentIndex">
+                                        <number>1</number>
+                                </property>
+                                <widget class="QWidget" name="tab_3">
+                                        <attribute name="title">
+                                                <string>Lexico</string>
+                                        </attribute>
+                                        <widget class="QTableView" name="resultadoLexico">
+                                                <property name="geometry">
+                                                        <rect>
+                                                                <x>10</x>
+                                                                <y>10</y>
+                                                                <width>371</width>
+                                                                <height>391</height>
+                                                        </rect>
+                                                </property>
+                                        </widget>
+                                </widget>
+                                <widget class="QWidget" name="tab">
+                                        <property name="toolTip">
+                                                <string>
+                                                        &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                        </property>
+                                        <attribute name="title">
+                                                <string>Sintactico</string>
+                                        </attribute>
+                                        <widget class="QTreeWidget" name="resultadoSintactico">
+                                                <property name="geometry">
+                                                        <rect>
+                                                                <x>20</x>
+                                                                <y>10</y>
+                                                                <width>351</width>
+                                                                <height>381</height>
+                                                        </rect>
+                                                </property>
+                                                <column>
+                                                        <property name="text">
+                                                                <string>Aanalizador sintactico
+                                                                </string>
+                                                        </property>
+                                                </column>
+                                        </widget>
+                                </widget>
+                                <widget class="QWidget" name="tab_2">
+                                        <attribute name="title">
+                                                <string>Semantico</string>
+                                        </attribute>
+                                        <widget class="QTableView" name="tableView_3">
+                                                <property name="geometry">
+                                                        <rect>
+                                                                <x>10</x>
+                                                                <y>10</y>
+                                                                <width>371</width>
+                                                                <height>391</height>
+                                                        </rect>
+                                                </property>
+                                        </widget>
+                                </widget>
+                                <widget class="QWidget" name="tab_4">
+                                        <attribute name="title">
+                                                <string>Codigo Intermedio</string>
+                                        </attribute>
+                                </widget>
+                        </widget>
+                        <widget class="QTextEdit" name="textEdit_2">
+                                <property name="geometry">
+                                        <rect>
+                                                <x>10</x>
+                                                <y>480</y>
+                                                <width>921</width>
+                                                <height>131</height>
+                                        </rect>
+                                </property>
+                                <property name="readOnly">
+                                        <bool>true</bool>
+                                </property>
+                        </widget>
+                        <widget class="QLabel" name="label">
+                                <property name="geometry">
+                                        <rect>
+                                                <x>10</x>
+                                                <y>450</y>
+                                                <width>55</width>
+                                                <height>16</height>
+                                        </rect>
+                                </property>
+                                <property name="font">
+                                        <font>
+                                                <pointsize>12</pointsize>
+                                        </font>
+                                </property>
+                                <property name="text">
+                                        <string>Errores</string>
+                                </property>
+                        </widget>
+                </widget>
+                <widget class="QMenuBar" name="menubar">
+                        <property name="geometry">
+                                <rect>
+                                        <x>0</x>
+                                        <y>0</y>
+                                        <width>944</width>
+                                        <height>23</height>
+                                </rect>
+                        </property>
+                        <widget class="QMenu" name="menuArchivo">
+                                <property name="title">
+                                        <string>Archivo</string>
+                                </property>
+                                <addaction name="actionNuevo" />
+                                <addaction name="actionAbrir" />
+                                <addaction name="actionGuardar" />
+                                <addaction name="actionGuardar_como" />
+                        </widget>
+                        <widget class="QMenu" name="menuEditar">
+                                <property name="title">
+                                        <string>Editar</string>
+                                </property>
+                                <addaction name="actionDeshacer" />
+                                <addaction name="actionCopiar" />
+                                <addaction name="actionCortar" />
+                                <addaction name="actionPegar" />
+                        </widget>
+                        <widget class="QMenu" name="menuCompilar">
+                                <property name="title">
+                                        <string>Construir</string>
+                                </property>
+                                <addaction name="actionCompilar" />
+                        </widget>
+                        <addaction name="menuArchivo" />
+                        <addaction name="menuEditar" />
+                        <addaction name="menuCompilar" />
+                </widget>
+                <widget class="QStatusBar" name="statusbar" />
+                <action name="actionNuevo">
+                        <property name="text">
+                                <string>Nuevo</string>
+                        </property>
+                        <property name="shortcut">
+                                <string>Ctrl+N</string>
+                        </property>
+                </action>
+                <action name="actionAbrir">
+                        <property name="text">
+                                <string>Abrir</string>
+                        </property>
+                        <property name="shortcut">
+                                <string>Ctrl+O</string>
+                        </property>
+                </action>
+                <action name="actionGuardar">
+                        <property name="text">
+                                <string>Guardar</string>
+                        </property>
+                        <property name="shortcut">
+                                <string>Ctrl+S</string>
+                        </property>
+                </action>
+                <action name="actionGuardar_como">
+                        <property name="text">
+                                <string>Guardar como</string>
+                        </property>
+                        <property name="shortcut">
+                                <string>Ctrl+Shift+S</string>
+                        </property>
+                </action>
+                <action name="actionDeshacer">
+                        <property name="text">
+                                <string>Deshacer</string>
+                        </property>
+                        <property name="shortcut">
+                                <string>Ctrl+Z</string>
+                        </property>
+                </action>
+                <action name="actionCopiar">
+                        <property name="text">
+                                <string>Copiar</string>
+                        </property>
+                        <property name="shortcut">
+                                <string>Ctrl+C</string>
+                        </property>
+                </action>
+                <action name="actionCortar">
+                        <property name="text">
+                                <string>Cortar</string>
+                        </property>
+                        <property name="shortcut">
+                                <string>Ctrl+X</string>
+                        </property>
+                </action>
+                <action name="actionPegar">
+                        <property name="text">
+                                <string>Pegar</string>
+                        </property>
+                        <property name="shortcut">
+                                <string>Ctrl+V</string>
+                        </property>
+                </action>
+                <action name="actionCompilar">
+                        <property name="text">
+                                <string>Compilar</string>
+                        </property>
+                </action>
+        </widget>
+        <resources />
+        <connections />
+</ui>
