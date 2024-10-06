@@ -7,7 +7,8 @@ tokens = [
     'AND', 'OR', 'VERDADERO', 'FALSO', 'SUMA', 'RESTA', 'MULT',
     'DIV', 'POTENCIA', 'MENOR', 'MENORIGUAL', 'MAYOR', 'MAYORIGUAL',
     'IGUAL', 'DISTINTO', 'ASIGNACION', 'PUNTOCOMA', 'COMA', 'PARIZQ',
-    'PARDER', 'LLAVIZQ', 'LLAVDER', 'ID', 'NUMERO', 'BREAK', 'THEN'
+    'PARDER', 'LLAVIZQ', 'LLAVDER', 'ID', 'NUMERO', 'BREAK', 'THEN',
+    'NUMERO_HEX'
 ]
 
 # Definición de palabras reservadas
@@ -79,10 +80,9 @@ def t_COMENTARIO_MULTILINEA(t):
     pass  # Ignorar comentarios de múltiples líneas
 
 def t_NUMERO_HEX(t):
-    r'0x[0-9A-Fa-F]+'
+    r'0x[0-9a-fA-F]+'
     t.value = int(t.value, 16)
     return t
-
 
 # Regla para ignorar espacios en blanco y tabulaciones
 t_ignore = ' \t'

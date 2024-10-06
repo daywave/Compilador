@@ -2,6 +2,7 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
+    NUMERO_HEX
     POTENCIA
 
 Grammar
@@ -94,6 +95,7 @@ MIENTRAS             : 24
 MULT                 : 46
 NO                   : 49
 NUMERO               : 54
+NUMERO_HEX           : 
 OR                   : 31
 PARDER               : 22 23 24 25 52
 PARIZQ               : 22 23 24 25 52

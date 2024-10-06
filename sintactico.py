@@ -235,11 +235,24 @@ def p_empty(p):
 
 def p_error(p):
     if p:
-        print(f"Error de sintaxis en token {p.type} en la línea {p.lineno}, columna {p.lexpos}")
-        # Descartar el token erróneo y continuar
-        parser.errok()
+        print(f"Error de sintaxis en la línea {p.lineno}, columna {p.lexpos}:")
+        print(f"  Se esperaba una de las siguientes producciones:")
+        for prod in parser.productions:
+            if prod.name == p.type:
+                print(f"    {prod}")
+        print(f"  Encontré: '{p.value}'")
     else:
-        print("Error de sintaxis en EOF")
+        print("Error de sintaxis: se esperaba más entrada")
+
+    # Recuperación básica: salta tokens hasta encontrar un punto y coma o el final del archivo
+    while True:
+        tok = parser.token()
+        if not tok or tok.type in ['PUNTOCOMA', 'LLAVDER']:
+            break
+
+
+
+
 
 # Construir el analizador sintáctico
 parser = yacc.yacc()
