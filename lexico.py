@@ -55,7 +55,7 @@ t_LLAVDER = r'\}'
 
 # Expresiones regulares para tokens compuestos
 def t_ID(t):
-    r'[a-zA-Z][a-zA-Z0-9_]*'
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
     t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
     return t
 
@@ -75,8 +75,14 @@ def t_COMENTARIO_UNA_LINEA(t):
 
 # Comentarios de múltiples líneas
 def t_COMENTARIO_MULTILINEA(t):
-    r'/\*[\s\S]*?\*/'
+    r'/\*(.|\n)*?\*/'
     pass  # Ignorar comentarios de múltiples líneas
+
+def t_NUMERO_HEX(t):
+    r'0x[0-9A-Fa-F]+'
+    t.value = int(t.value, 16)
+    return t
+
 
 # Regla para ignorar espacios en blanco y tabulaciones
 t_ignore = ' \t'
