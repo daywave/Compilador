@@ -1,8 +1,11 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QTableWidgetItem, QFileDialog, QTreeWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QTableWidgetItem, QFileDialog, QTreeWidgetItem, QTextEdit
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
 from lexico import analizar  # Importar la función del analizador léxico
 import sintactico  # Importar el módulo del analizador sintáctico
+from semantico import analizar_semantico
+import traceback
+
 import sys
 
 class Main(QMainWindow):
@@ -27,6 +30,9 @@ class Main(QMainWindow):
         # Conectar el botón Compilar al análisis léxico y sintáctico
         self.menuCompilar.triggered.connect(self.compilarCodigo)
 
+        self.errorTextEdit = self.findChild(QTextEdit, 'errorTextEdit')
+        self.errorText = QTextEdit()
+
     def compilarCodigo(self):
         # Obtener el texto del editor de código
         codigo = self.seccionCodigo.toPlainText()
@@ -35,8 +41,48 @@ class Main(QMainWindow):
         # Mostrar los resultados en el QTableView
         self.mostrarResultadosLexicos(tokens_encontrados)
         # Realizar el análisis sintáctico
-        self.perform_syntactic_analysis(codigo)
+        #self.perform_syntactic_analysis(codigo)
 
+        arbol_sintactico, error_sintactico = sintactico.analizar_sintactico(codigo)
+        
+        if error_sintactico:
+            self.display_syntactic_error(error_sintactico)
+        else:
+            self.display_syntactic_tree(arbol_sintactico)
+
+            #realizar analisis semantico
+            try:
+                errores_semanticos = analizar_semantico(arbol_sintactico)
+                if errores_semanticos:
+                    self.display_semantic_error(errores_semanticos)
+                else:
+                    self.display_semantic_success()
+            except Exception as e:
+                error_msg = f"Error en el análisis semántico: \n{str(e)}\n\n"
+                error_msg += f"Traceback: \n{''.join(traceback.format_tb(e.__traceback__))}"
+                self.display_semantic_error([error_msg])
+
+    
+    def display_semantic_error(self, title, message):
+        error_text = f"{title}:\n{message}"
+        if hasattr(self, 'errorTextEdit'):
+            self.errorTextEdit.setPlainText(error_text)
+        else:
+            print(error_text)
+    
+    def display_success(self, message):
+        if hasattr(self, 'errorTextEdit'):
+            self.errorTextEdit.setPlainText(message)
+        else:
+            print(message)
+    
+    def display_semantic_error(self, errores):
+        error_text = "Errores semánticos:\n + '\n'.join(errores)"
+        self.errorText.setPlainText(error_text)
+
+    def display_semantic_success(self):
+        self.errorText.setPlainText("Análisis semántico exitoso")
+    
     def mostrarResultadosLexicos(self, tokens):
         # Limpiar el modelo anterior
         self.modelo_lexico.clear()
