@@ -1,18 +1,18 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QTableWidgetItem, QFileDialog, QTreeWidgetItem, QTextEdit
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
-from lexico import analizar  # Importar la función del analizador léxico
-import sintactico  # Importar el módulo del analizador sintáctico
+from lexico import analizar  
+import sintactico  
 from semantico import analizar_semantico
 import traceback
-
 import sys
+import io 
 
 class Main(QMainWindow):
     def __init__(self):
         super(Main, self).__init__()
         loadUi("ide.ui", self)
-        
+
         # Conectar las acciones del menú
         self.actionNuevo.triggered.connect(self.newFile)
         self.actionAbrir.triggered.connect(self.openFile)
@@ -22,67 +22,96 @@ class Main(QMainWindow):
         self.actionCopiar.triggered.connect(self.copy)
         self.actionCortar.triggered.connect(self.cut)
         self.actionPegar.triggered.connect(self.paste)
-        
-        # Crear modelos para QTableView
+
+
         self.modelo_lexico = QStandardItemModel()
         self.resultadoLexico.setModel(self.modelo_lexico)
-        
-        # Conectar el botón Compilar al análisis léxico y sintáctico
-        self.menuCompilar.triggered.connect(self.compilarCodigo)
+        self.actionCompilar.triggered.connect(self.compilarCodigo)
+        self.errorTextEdit = self.mostrarErrores
 
-        self.errorTextEdit = self.findChild(QTextEdit, 'errorTextEdit')
-        self.errorText = QTextEdit()
+
+        self.redirect_stderr()
+
+    def redirect_stderr(self):
+        """Redirige stderr a un stream que captura los errores."""
+        self.stderr_buffer = io.StringIO()
+        sys.stderr = self.stderr_buffer
 
     def compilarCodigo(self):
-        # Obtener el texto del editor de código
-        codigo = self.seccionCodigo.toPlainText()
-        # Realizar el análisis léxico
-        tokens_encontrados = analizar(codigo)
-        # Mostrar los resultados en el QTableView
-        self.mostrarResultadosLexicos(tokens_encontrados)
-        # Realizar el análisis sintáctico
-        #self.perform_syntactic_analysis(codigo)
+        try:
+            codigo = self.seccionCodigo.toPlainText()
 
-        arbol_sintactico, error_sintactico = sintactico.analizar_sintactico(codigo)
+            self.mostrarErrores.clear()
+
+            tokens_encontrados = analizar(codigo)
+            self.mostrarResultadosLexicos(tokens_encontrados)
+            arbol_sintactico, errores_sintacticos = sintactico.analizar_sintactico(codigo)
+
+            if errores_sintacticos:
+                for error in errores_sintacticos:
+                    self.display_errors(error)  
+
+            else:
+                self.display_syntactic_tree(arbol_sintactico)
+
+                try:
+                    errores_semanticos = analizar_semantico(arbol_sintactico)
+                    if errores_semanticos:
+                        
+                        for error in errores_semanticos:
+                            self.display_errors(error)  # Mostrar cada error semántico en el widget
+                    else:
+                        self.display_success()  
+                except Exception as e:
+                    error_msg = f"Error en el análisis semántico: \n{str(e)}\n\n"
+                    error_msg += f"Traceback: \n{''.join(traceback.format_tb(e.__traceback__))}"
+                    self.display_errors(error_msg)
+
+        except Exception as e:
+            error_msg = f"Error en la compilación: \n{str(e)}\n\n"
+            error_msg += f"Traceback: \n{''.join(traceback.format_tb(e.__traceback__))}"
+            self.display_errors(error_msg) 
+
+        self.display_captured_errors()
+
+    def display_captured_errors(self):
+        """Muestra los errores capturados de stderr en el widget de errores."""
+        captured_errors = self.stderr_buffer.getvalue()
+        if captured_errors:
+            self.display_errors(captured_errors)
+        self.stderr_buffer.truncate(0)
+
+    def display_errors(self, error_msg):
+        self.mostrarErrores.append(f"<span style='color:red;'>{error_msg}</span>")
+
+    def display_success(self):
+        self.mostrarErrores.append("<span style='color:green;'>Análisis semántico exitoso!</span>")
+
+    def display_syntactic_tree(self, ast):
+        self.resultadoSintactico.clear()
+        # Crear el nodo raíz
+        root = QTreeWidgetItem(self.resultadoSintactico)
+        root.setText(0, "AST")
+        # Poblamos el árbol con el resultado del AST
+        self.populate_tree_view(self.resultadoSintactico, ast, root)
         
-        if error_sintactico:
-            self.display_syntactic_error(error_sintactico)
-        else:
-            self.display_syntactic_tree(arbol_sintactico)
+        self.resultadoSintactico.expandAll()
 
-            #realizar analisis semantico
-            try:
-                errores_semanticos = analizar_semantico(arbol_sintactico)
-                if errores_semanticos:
-                    self.display_semantic_error(errores_semanticos)
-                else:
-                    self.display_semantic_success()
-            except Exception as e:
-                error_msg = f"Error en el análisis semántico: \n{str(e)}\n\n"
-                error_msg += f"Traceback: \n{''.join(traceback.format_tb(e.__traceback__))}"
-                self.display_semantic_error([error_msg])
-
-    
-    def display_semantic_error(self, title, message):
-        error_text = f"{title}:\n{message}"
-        if hasattr(self, 'errorTextEdit'):
-            self.errorTextEdit.setPlainText(error_text)
+    def populate_tree_view(self, tree_widget, node, parent):
+        if isinstance(node, tuple):
+            # El primer elemento del tuple es el nombre del nodo
+            node_item = QTreeWidgetItem(parent)
+            node_item.setText(0, node[0])
+            # Recorrer los hijos del nodo
+            for child in node[1:]:
+                self.populate_tree_view(tree_widget, child, node_item)
+        elif isinstance(node, list):
+            for child in node:
+                self.populate_tree_view(tree_widget, child, parent)
         else:
-            print(error_text)
-    
-    def display_success(self, message):
-        if hasattr(self, 'errorTextEdit'):
-            self.errorTextEdit.setPlainText(message)
-        else:
-            print(message)
-    
-    def display_semantic_error(self, errores):
-        error_text = "Errores semánticos:\n + '\n'.join(errores)"
-        self.errorText.setPlainText(error_text)
+            leaf_item = QTreeWidgetItem(parent)
+            leaf_item.setText(0, str(node))
 
-    def display_semantic_success(self):
-        self.errorText.setPlainText("Análisis semántico exitoso")
-    
     def mostrarResultadosLexicos(self, tokens):
         # Limpiar el modelo anterior
         self.modelo_lexico.clear()
@@ -95,53 +124,11 @@ class Main(QMainWindow):
             linea_item = QStandardItem(str(token.lineno))
             self.modelo_lexico.appendRow([tipo_item, valor_item, linea_item])
 
-    def perform_syntactic_analysis(self, code):
-        try:
-            result, error = sintactico.analizar_sintactico(code)
-            if error:
-                self.display_syntactic_error(error)
-            else:
-                self.display_syntactic_tree(result)
-        except Exception as e:
-            self.display_syntactic_error(str(e))
-
-    def display_syntactic_tree(self, ast):
-        # Limpiar el árbol sintáctico anterior
-        self.resultadoSintactico.clear()
-        # Crear el nodo raíz
-        root = QTreeWidgetItem(self.resultadoSintactico)
-        root.setText(0, "AST")
-        # Poblamos el árbol con el resultado del AST
-        self.populate_tree_view(self.resultadoSintactico, ast, root)
-        # Expandir todos los elementos para una mejor visualización
-        self.resultadoSintactico.expandAll()
-
-    def populate_tree_view(self, tree_widget, node, parent):
-        if isinstance(node, tuple):
-            # El primer elemento del tuple es el nombre del nodo
-            node_item = QTreeWidgetItem(parent)
-            node_item.setText(0, node[0])
-            # Recorrer los hijos del nodo
-            for child in node[1:]:
-                self.populate_tree_view(tree_widget, child, node_item)
-        elif isinstance(node, list):
-            # Si el nodo es una lista, recorremos sus elementos
-            for child in node:
-                self.populate_tree_view(tree_widget, child, parent)
-        else:
-            # Si el nodo es una hoja, se agrega directamente
-            leaf_item = QTreeWidgetItem(parent)
-            leaf_item.setText(0, str(node))
-
-    def display_syntactic_error(self, error):
-        # Mostramos el error en un QPlainTextEdit o QTextEdit
-        self.errorText.setPlainText(f"Error: {error}")
-
     def newFile(self):
         self.seccionCodigo.clear()
-        self.modelo_lexico.clear()  # Limpiar la tabla léxica
-        self.resultadoSintactico.clear()  # Limpiar el árbol sintáctico
-        self.errorText.clear()  # Limpiar el texto de error
+        self.modelo_lexico.clear()  
+        self.resultadoSintactico.clear()  
+        self.mostrarErrores.clear()
 
     def openFile(self):
         filename, _ = QFileDialog.getOpenFileName(self, "Abrir archivo", "", "Archivos de texto (*.txt);;Todos los archivos (*)")
@@ -174,3 +161,10 @@ class Main(QMainWindow):
 
     def paste(self):
         self.seccionCodigo.paste()
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = Main()
+    window.show()
+    sys.exit(app.exec_())
