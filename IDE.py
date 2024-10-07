@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QTableWidgetItem, QFileDialog, QTreeWidgetItem, QTextEdit, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QFileDialog, QTreeWidgetItem, QTextEdit
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
 from lexico import analizar  
@@ -43,29 +43,28 @@ class Main(QMainWindow):
             codigo = self.seccionCodigo.toPlainText()
             self.mostrarErrores.clear()
 
+            # Análisis léxico
             tokens_encontrados = analizar(codigo)
             self.mostrarResultadosLexicos(tokens_encontrados)
+
+            # Análisis sintáctico
             arbol_sintactico, errores_sintacticos = sintactico.analizar_sintactico(codigo)
 
             if errores_sintacticos:
                 for error in errores_sintacticos:
                     self.display_errors(error)  
             else:
-                self.display_syntactic_tree(arbol_sintactico)
+                self.display_syntactic_tree(arbol_sintactico)  # Mostrar árbol sintáctico
 
-                try:
-                    errores_semanticos = analizar_semantico(arbol_sintactico)
-                    self.mostrarResultadosSemanticos(errores_semanticos)  # Mostrar resultados semánticos
-                    if errores_semanticos:
-                        for error in errores_semanticos:
-                            self.display_errors(error)  # Mostrar cada error semántico en el widget
-                    else:
-                        self.display_success()  
-                except Exception as e:
-                    error_msg = f"Error en el análisis semántico: \n{str(e)}\n\n"
-                    error_msg += f"Traceback: \n{''.join(traceback.format_tb(e.__traceback__))}"
-                    self.display_errors(error_msg)
-
+                # Análisis semántico
+                errores_semanticos = analizar_semantico(arbol_sintactico)
+                self.mostrarResultadosSemanticos(errores_semanticos)  # Mostrar resultados semánticos
+                
+                if errores_semanticos:
+                    for error in errores_semanticos:
+                        self.display_errors(error)  # Mostrar cada error semántico en el widget
+                else:
+                    self.display_success()  
         except Exception as e:
             error_msg = f"Error en la compilación: \n{str(e)}\n\n"
             error_msg += f"Traceback: \n{''.join(traceback.format_tb(e.__traceback__))}"
@@ -75,7 +74,6 @@ class Main(QMainWindow):
 
     def mostrarResultadosSemanticos(self, errores_semanticos):
         """Muestra los resultados semánticos en el QTableView."""
-        print("Limpieza del modelo semántico.")
         self.modelo_semantico.clear()  # Limpiar el modelo anterior
         self.modelo_semantico.setHorizontalHeaderLabels(['Tipo', 'Mensaje'])  # Establecer encabezados
 
@@ -108,21 +106,29 @@ class Main(QMainWindow):
         root = QTreeWidgetItem(self.resultadoSintactico)
         root.setText(0, "AST")
         # Poblamos el árbol con el resultado del AST
-        self.populate_tree_view(self.resultadoSintactico, ast, root)
+        self.populate_tree_view(ast, root)
         
         self.resultadoSintactico.expandAll()
 
-    def populate_tree_view(self, tree_widget, node, parent):
-        if isinstance(node, tuple):
-            # El primer elemento del tuple es el nombre del nodo
+    def populate_tree_view(self, node, parent):
+        """Populate the tree widget with the AST."""
+        if isinstance(node, sintactico.Instruccion):
             node_item = QTreeWidgetItem(parent)
-            node_item.setText(0, node[0])
-            # Recorrer los hijos del nodo
-            for child in node[1:]:
-                self.populate_tree_view(tree_widget, child, node_item)
+            node_item.setText(0, type(node).__name__)
+            for attr, value in vars(node).items():
+                child_item = QTreeWidgetItem(node_item)
+                child_item.setText(0, attr)
+                if isinstance(value, list):
+                    for item in value:
+                        self.populate_tree_view(item, child_item)
+                elif isinstance(value, sintactico.Instruccion):
+                    self.populate_tree_view(value, child_item)
+                else:
+                    value_item = QTreeWidgetItem(child_item)
+                    value_item.setText(0, str(value))
         elif isinstance(node, list):
-            for child in node:
-                self.populate_tree_view(tree_widget, child, parent)
+            for item in node:
+                self.populate_tree_view(item, parent)
         else:
             leaf_item = QTreeWidgetItem(parent)
             leaf_item.setText(0, str(node))
@@ -147,7 +153,6 @@ class Main(QMainWindow):
             self.modelo_semantico.clear()  # Limpiar resultados semánticos
             self.mostrarErrores.clear()
             self.current_file = None
-
 
     def openFile(self):
         if not self.confirm_save():
