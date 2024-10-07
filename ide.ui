@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
@@ -6,177 +5,197 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>944</width>
-    <height>661</height>
+    <width>1124</width>
+    <height>784</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTextEdit" name="seccionCodigo">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>551</width>
-      <height>441</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-   </widget>
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>550</x>
-      <y>-10</y>
-      <width>391</width>
-      <height>441</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="currentIndex">
-     <number>1</number>
-    </property>
-    <widget class="QWidget" name="tab_3">
-     <attribute name="title">
-      <string>Lexico</string>
-     </attribute>
-     <widget class="QTableView" name="resultadoLexico">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>371</width>
-        <height>391</height>
-       </rect>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0" colspan="2">
+     <widget class="QTextEdit" name="seccionCodigo">
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
       </property>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab">
-     <property name="toolTip">
-      <string>
+    </item>
+    <item row="0" column="2" rowspan="2">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Lexico</string>
+       </attribute>
+       <widget class="QTableView" name="resultadoLexico">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>501</width>
+          <height>651</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab">
+       <property name="toolTip">
+        <string>
                                                         &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <attribute name="title">
-      <string>Sintactico</string>
-     </attribute>
-     <widget class="QTreeWidget" name="resultadoSintactico">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>10</y>
-        <width>351</width>
-        <height>381</height>
-       </rect>
-      </property>
-      <column>
-       <property name="text">
-        <string>Aanalizador sintactico
-                                                                </string>
        </property>
-      </column>
+       <attribute name="title">
+        <string>Sintactico</string>
+       </attribute>
+       <widget class="QTreeWidget" name="resultadoSintactico">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>10</y>
+          <width>491</width>
+          <height>651</height>
+         </rect>
+        </property>
+        <column>
+         <property name="text">
+          <string>Aanalizador sintactico
+                                                                </string>
+         </property>
+        </column>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Semantico</string>
+       </attribute>
+       <widget class="QTableView" name="tableView_3">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>371</width>
+          <height>391</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Codigo Intermedio</string>
+       </attribute>
+      </widget>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Semantico</string>
-     </attribute>
-     <widget class="QTableView" name="tableView_3">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>371</width>
-        <height>391</height>
-       </rect>
+    </item>
+    <item row="1" column="0">
+     <widget class="QTabWidget" name="tabWidget_2">
+      <property name="currentIndex">
+       <number>2</number>
       </property>
+      <widget class="QWidget" name="tab_5">
+       <attribute name="title">
+        <string>Errores Lexicos</string>
+       </attribute>
+       <widget class="QTextEdit" name="errorLexico">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>521</width>
+          <height>301</height>
+         </rect>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_6">
+       <attribute name="title">
+        <string>Errores Sintacticos</string>
+       </attribute>
+       <widget class="QTextEdit" name="errorSintactico">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>521</width>
+          <height>301</height>
+         </rect>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="tab_7">
+       <attribute name="title">
+        <string>Errores Semanticos</string>
+       </attribute>
+       <widget class="QTextEdit" name="mostrarErrores">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>521</width>
+          <height>301</height>
+         </rect>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </widget>
      </widget>
-    </widget>
-    <widget class="QWidget" name="tab_4">
-     <attribute name="title">
-      <string>Codigo Intermedio</string>
-     </attribute>
-    </widget>
-   </widget>
-   <widget class="QTextEdit" name="mostrarErrores">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>480</y>
-      <width>921</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>450</y>
-      <width>55</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>12</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Errores</string>
-    </property>
-   </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>944</width>
-     <height>23</height>
+     <width>1124</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArchivo">
     <property name="title">
      <string>Archivo</string>
     </property>
-    <addaction name="actionNuevo"/>
-    <addaction name="actionAbrir"/>
-    <addaction name="actionGuardar"/>
-    <addaction name="actionGuardar_como"/>
+    <addaction name="actionNuevo" />
+    <addaction name="actionAbrir" />
+    <addaction name="actionGuardar" />
+    <addaction name="actionGuardar_como" />
    </widget>
    <widget class="QMenu" name="menuEditar">
     <property name="title">
      <string>Editar</string>
     </property>
-    <addaction name="actionDeshacer"/>
-    <addaction name="actionCopiar"/>
-    <addaction name="actionCortar"/>
-    <addaction name="actionPegar"/>
+    <addaction name="actionDeshacer" />
+    <addaction name="actionCopiar" />
+    <addaction name="actionCortar" />
+    <addaction name="actionPegar" />
    </widget>
    <widget class="QMenu" name="menuCompilar">
     <property name="title">
      <string>Construir</string>
     </property>
-    <addaction name="actionCompilar"/>
+    <addaction name="actionCompilar" />
    </widget>
-   <addaction name="menuArchivo"/>
-   <addaction name="menuEditar"/>
-   <addaction name="menuCompilar"/>
+   <addaction name="menuArchivo" />
+   <addaction name="menuEditar" />
+   <addaction name="menuCompilar" />
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar" />
   <action name="actionNuevo">
    <property name="text">
     <string>Nuevo</string>
@@ -247,6 +266,6 @@
    </property>
   </action>
  </widget>
- <resources/>
- <connections/>
+ <resources />
+ <connections />
 </ui>
