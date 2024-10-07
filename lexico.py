@@ -54,12 +54,17 @@ t_PARDER = r'\)'
 t_LLAVIZQ = r'\{'
 t_LLAVDER = r'\}'
 
-# Expresiones regulares para tokens compuestos
+# Regla para identificadores
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
+    if t.value in reservadas:
+        t.type = reservadas[t.value]  # Verifica si es palabra reservada
+    elif len(t.value) > 30:  # Ejemplo de límite de longitud
+        print(f"Error: identificador '{t.value}' demasiado largo.")
+        t.type = 'ID'
     return t
 
+# Regla para números
 def t_NUMERO(t):
     r'\d+(\.\d+)?'
     try:
@@ -69,22 +74,23 @@ def t_NUMERO(t):
         t.value = 0
     return t
 
-# Comentarios de una sola línea
+# Regla para comentarios de una sola línea
 def t_COMENTARIO_UNA_LINEA(t):
     r'//.*'
     pass  # Ignorar comentarios de una sola línea
 
-# Comentarios de múltiples líneas
+# Regla para comentarios de múltiples líneas
 def t_COMENTARIO_MULTILINEA(t):
     r'/\*(.|\n)*?\*/'
     pass  # Ignorar comentarios de múltiples líneas
 
+# Regla para números hexadecimales
 def t_NUMERO_HEX(t):
     r'0x[0-9a-fA-F]+'
     t.value = int(t.value, 16)
     return t
 
-# Regla para ignorar espacios en blanco y tabulaciones
+# Ignorar espacios en blanco y tabulaciones
 t_ignore = ' \t'
 
 # Regla para manejar saltos de línea
@@ -94,7 +100,7 @@ def t_newline(t):
 
 # Regla para manejar errores
 def t_error(t):
-    print(f"Caracter ilegal '{t.value[0]}'")
+    print(f"Error: carácter ilegal '{t.value[0]}' en la línea {t.lineno}")
     t.lexer.skip(1)
 
 # Construir el analizador léxico

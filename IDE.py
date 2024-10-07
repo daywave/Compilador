@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QTableWidgetItem, QFileDialog, QTreeWidgetItem, QTextEdit
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QTableWidgetItem, QFileDialog, QTreeWidgetItem, QTextEdit, QMessageBox
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
 from lexico import analizar  
@@ -22,15 +22,16 @@ class Main(QMainWindow):
         self.actionCopiar.triggered.connect(self.copy)
         self.actionCortar.triggered.connect(self.cut)
         self.actionPegar.triggered.connect(self.paste)
-
+        self.actionCompilar.triggered.connect(self.compilarCodigo)
 
         self.modelo_lexico = QStandardItemModel()
         self.resultadoLexico.setModel(self.modelo_lexico)
-        self.actionCompilar.triggered.connect(self.compilarCodigo)
+        self.modelo_semantico = QStandardItemModel()  # Modelo para resultados semánticos
+        self.resultadoSemantic.setModel(self.modelo_semantico)  # Asignar el modelo al QTableView
         self.errorTextEdit = self.mostrarErrores
 
-
         self.redirect_stderr()
+        self.current_file = None
 
     def redirect_stderr(self):
         """Redirige stderr a un stream que captura los errores."""
@@ -40,7 +41,6 @@ class Main(QMainWindow):
     def compilarCodigo(self):
         try:
             codigo = self.seccionCodigo.toPlainText()
-
             self.mostrarErrores.clear()
 
             tokens_encontrados = analizar(codigo)
@@ -50,14 +50,13 @@ class Main(QMainWindow):
             if errores_sintacticos:
                 for error in errores_sintacticos:
                     self.display_errors(error)  
-
             else:
                 self.display_syntactic_tree(arbol_sintactico)
 
                 try:
                     errores_semanticos = analizar_semantico(arbol_sintactico)
+                    self.mostrarResultadosSemanticos(errores_semanticos)  # Mostrar resultados semánticos
                     if errores_semanticos:
-                        
                         for error in errores_semanticos:
                             self.display_errors(error)  # Mostrar cada error semántico en el widget
                     else:
@@ -73,6 +72,22 @@ class Main(QMainWindow):
             self.display_errors(error_msg) 
 
         self.display_captured_errors()
+
+    def mostrarResultadosSemanticos(self, errores_semanticos):
+        """Muestra los resultados semánticos en el QTableView."""
+        print("Limpieza del modelo semántico.")
+        self.modelo_semantico.clear()  # Limpiar el modelo anterior
+        self.modelo_semantico.setHorizontalHeaderLabels(['Tipo', 'Mensaje'])  # Establecer encabezados
+
+        if errores_semanticos:
+            for error in errores_semanticos:
+                tipo_item = QStandardItem("Error")
+                mensaje_item = QStandardItem(error)
+                self.modelo_semantico.appendRow([tipo_item, mensaje_item])
+        else:
+            tipo_item = QStandardItem("Éxito")
+            mensaje_item = QStandardItem("Análisis semántico exitoso!")
+            self.modelo_semantico.appendRow([tipo_item, mensaje_item])
 
     def display_captured_errors(self):
         """Muestra los errores capturados de stderr en el widget de errores."""
@@ -125,19 +140,26 @@ class Main(QMainWindow):
             self.modelo_lexico.appendRow([tipo_item, valor_item, linea_item])
 
     def newFile(self):
-        self.seccionCodigo.clear()
-        self.modelo_lexico.clear()  
-        self.resultadoSintactico.clear()  
-        self.mostrarErrores.clear()
+        if self.confirm_save():
+            self.seccionCodigo.clear()
+            self.modelo_lexico.clear()  
+            self.resultadoSintactico.clear()  
+            self.modelo_semantico.clear()  # Limpiar resultados semánticos
+            self.mostrarErrores.clear()
+            self.current_file = None
+
 
     def openFile(self):
+        if not self.confirm_save():
+            return
         filename, _ = QFileDialog.getOpenFileName(self, "Abrir archivo", "", "Archivos de texto (*.txt);;Todos los archivos (*)")
         if filename:
             with open(filename, 'r') as file:
                 self.seccionCodigo.setPlainText(file.read())
+                self.current_file = filename
 
     def saveFile(self):
-        if hasattr(self, 'current_file'):
+        if self.current_file:
             with open(self.current_file, 'w') as file:
                 file.write(self.seccionCodigo.toPlainText())
         else:

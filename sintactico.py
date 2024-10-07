@@ -17,10 +17,7 @@ def p_list_decl(p):
     list_decl : decl list_decl
               | empty
     '''
-    if len(p) == 3:
-        p[0] = [p[1]] + p[2]
-    else:
-        p[0] = []
+    p[0] = [p[1]] + p[2] if len(p) == 3 else []
 
 def p_decl(p):
     '''
@@ -41,10 +38,7 @@ def p_list_id(p):
     list_id : ID COMA list_id
             | ID
     '''
-    if len(p) == 4:
-        p[0] = [p[1]] + p[3]
-    else:
-        p[0] = [p[1]]
+    p[0] = [p[1]] + p[3] if len(p) == 4 else [p[1]]
 
 def p_list_sent(p):
     '''
@@ -130,20 +124,14 @@ def p_exp_bool(p):
     exp_bool : exp_bool OR comb
              | comb
     '''
-    if len(p) == 4:
-        p[0] = ('exp_bool', p[1], 'or', p[3])
-    else:
-        p[0] = p[1]
+    p[0] = ('exp_bool', p[1], 'or', p[3]) if len(p) == 4 else p[1]
 
 def p_comb(p):
     '''
     comb : comb AND igualdad
          | igualdad
     '''
-    if len(p) == 4:
-        p[0] = ('comb', p[1], 'and', p[3])
-    else:
-        p[0] = p[1]
+    p[0] = ('comb', p[1], 'and', p[3]) if len(p) == 4 else p[1]
 
 def p_igualdad(p):
     '''
@@ -152,10 +140,7 @@ def p_igualdad(p):
              | rel
     '''
     if len(p) == 4:
-        if p[2] == '==':
-            p[0] = ('igualdad', p[1], '==', p[3])
-        else:
-            p[0] = ('igualdad', p[1], '!=', p[3])
+        p[0] = ('igualdad', p[1], p[2], p[3])
     else:
         p[0] = p[1]
 
@@ -167,10 +152,7 @@ def p_rel(p):
         | expr MAYORIGUAL expr
         | expr
     '''
-    if len(p) == 4:
-        p[0] = ('rel', p[1], p[2], p[3])
-    else:
-        p[0] = p[1]
+    p[0] = ('rel', p[1], p[2], p[3]) if len(p) == 4 else p[1]
 
 def p_expr(p):
     '''
@@ -179,10 +161,7 @@ def p_expr(p):
          | term
     '''
     if len(p) == 4:
-        if p[2] == '+':
-            p[0] = ('expr', p[1], '+', p[3])
-        else:
-            p[0] = ('expr', p[1], '-', p[3])
+        p[0] = ('expr', p[1], p[2], p[3])
     else:
         p[0] = p[1]
 
@@ -193,10 +172,7 @@ def p_term(p):
          | unario
     '''
     if len(p) == 4:
-        if p[2] == '*':
-            p[0] = ('term', p[1], '*', p[3])
-        else:
-            p[0] = ('term', p[1], '/', p[3])
+        p[0] = ('term', p[1], p[2], p[3])
     else:
         p[0] = p[1]
 
@@ -206,13 +182,7 @@ def p_unario(p):
            | RESTA unario
            | factor
     '''
-    if len(p) == 3:
-        if p[1] == 'not':
-            p[0] = ('unario', 'not', p[2])
-        else:
-            p[0] = ('unario', '-', p[2])
-    else:
-        p[0] = p[1]
+    p[0] = ('unario', p[1], p[2]) if len(p) == 3 else p[1]
 
 def p_factor(p):
     '''
@@ -222,10 +192,7 @@ def p_factor(p):
            | VERDADERO
            | FALSO
     '''
-    if len(p) == 4:
-        p[0] = p[2]
-    else:
-        p[0] = p[1]
+    p[0] = p[2] if len(p) == 4 else p[1]
 
 def p_empty(p):
     '''
@@ -235,24 +202,15 @@ def p_empty(p):
 
 def p_error(p):
     if p:
-        print(f"Error de sintaxis en la línea {p.lineno}, columna {p.lexpos}:")
-        print(f"  Se esperaba una de las siguientes producciones:")
-        for prod in parser.productions:
-            if prod.name == p.type:
-                print(f"    {prod}")
-        print(f"  Encontré: '{p.value}'")
+        print(f"Error de sintaxis en la línea {p.lineno}, columna {p.lexpos}: '{p.value}'")
     else:
         print("Error de sintaxis: se esperaba más entrada")
 
-    # Recuperación básica: salta tokens hasta encontrar un punto y coma o el final del archivo
+    # Recuperación básica
     while True:
         tok = parser.token()
         if not tok or tok.type in ['PUNTOCOMA', 'LLAVDER']:
             break
-
-
-
-
 
 # Construir el analizador sintáctico
 parser = yacc.yacc()

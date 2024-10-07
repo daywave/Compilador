@@ -1,11 +1,7 @@
-import ast
-
 class AnalizadorSemantico:
     def __init__(self):
         self.tabla_simbolos = {}
         self.errores = []
-
-    
 
     def analizar(self, arbol_sintactico):
         if arbol_sintactico is None:
@@ -51,7 +47,7 @@ class AnalizadorSemantico:
             if var in self.tabla_simbolos:
                 self.errores.append(f"Error semántico: Variable '{var}' ya declarada")
             else:
-                self.tabla_simbolos[var] = {'tipo': tipo}
+                self.tabla_simbolos[var] = {'tipo': tipo, 'inicializada': False}  # Agregamos inicialización
 
     def visitar_sent_assign(self, nodo):
         var = nodo[1]
@@ -63,6 +59,8 @@ class AnalizadorSemantico:
             tipo_valor = self.inferir_tipo(valor)
             if tipo_var != tipo_valor:
                 self.errores.append(f"Error semántico: Asignación de tipo incorrecto a '{var}'")
+            else:
+                self.tabla_simbolos[var]['inicializada'] = True  # Marcamos como inicializada
 
     def visitar_sent_if(self, nodo):
         condicion = self.visitar(nodo[1])
@@ -88,6 +86,8 @@ class AnalizadorSemantico:
         var = nodo[1]
         if var not in self.tabla_simbolos:
             self.errores.append(f"Error semántico: Variable '{var}' no declarada")
+        elif not self.tabla_simbolos[var]['inicializada']:
+            self.errores.append(f"Error semántico: Variable '{var}' no ha sido inicializada")
 
     def visitar_sent_write(self, nodo):
         self.visitar(nodo[1])
