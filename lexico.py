@@ -8,7 +8,7 @@ tokens = [
     'DIV', 'POTENCIA', 'MENOR', 'MENORIGUAL', 'MAYOR', 'MAYORIGUAL',
     'IGUAL', 'DISTINTO', 'ASIGNACION', 'PUNTOCOMA', 'COMA', 'PARIZQ',
     'PARDER', 'LLAVIZQ', 'LLAVDER', 'ID', 'NUMERO', 'BREAK', 'THEN',
-    'NUMERO_HEX'
+    'NUMERO_HEX', 'CONCAT'
 ]
 
 # Definición de palabras reservadas
@@ -53,6 +53,7 @@ t_PARIZQ = r'\('
 t_PARDER = r'\)'
 t_LLAVIZQ = r'\{'
 t_LLAVDER = r'\}'
+t_CONCAT = r'&'  # Token para la concatenación
 
 # Regla para identificadores
 def t_ID(t):

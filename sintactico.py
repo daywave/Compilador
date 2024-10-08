@@ -176,12 +176,17 @@ def p_sent_break(p):
 def p_exp_bool(p):
     '''
     exp_bool : exp_bool OR comb
+             | exp_bool AND comb
              | comb
     '''
     if len(p) == 4:
-        p[0] = ExpresionBooleana(p[1], 'or', p[3])  # Genera la expresión booleana
+        if p[2] == 'or':
+            p[0] = ExpresionBooleana(p[1], 'or', p[3])  # Genera la expresión booleana con OR
+        elif p[2] == 'and':  # Manejo del operador &&
+            p[0] = ExpresionBooleana(p[1], 'and', p[3])  # Genera la expresión booleana con AND
     else:
-        p[0] = p[1]
+        p[0] = p[1]  # Retorna la expresión booleana simple
+
 
 def p_comb(p):
     '''
