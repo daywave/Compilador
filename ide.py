@@ -1,24 +1,26 @@
 import sys
+import pickle
+import os
 
-#importaciones de pyqt
+# Importaciones de PyQt
 from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QTableWidgetItem, QFileDialog, QTreeWidgetItem, QTextEdit
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QFont
 
-#importaciones desde archivos
+# Importaciones desde archivos
 from analizador_lexico import analizar_codigo  # Importar el analizador léxico
 from analizador_sintaxis import analizar_sintactico  # Importar el analizador sintáctico
 from syntax_highlighter import Highlighter
 from symtab import SymbolTable
+from nodo import Nodo  # Importamos la clase Nodo
 
 
 class IDE(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi("ide.ui", self)  # Cargar el archivo .ui
-        
-        
+
         self.symbol_table = SymbolTable()  # Instancia de la tabla de símbolos
         # Configurar el resaltador de sintaxis
         self.highlighter = Highlighter(self.seccionCodigo.document())
@@ -57,7 +59,6 @@ class IDE(QMainWindow):
         # Fase 2: Realizar el análisis sintáctico si no hay errores léxicos
         ast, errores_sintacticos = analizar_sintactico(codigo)
 
-        
         # Leer y mostrar los errores sintácticos desde el archivo
         with open("ErroresSintacticos.txt", "r") as archivo_errores:
             errores = archivo_errores.read()
@@ -66,13 +67,14 @@ class IDE(QMainWindow):
                 self.resultadoSintactico.clear()
                 self.tablaSimbolos.setModel(None)  # Limpiar la tabla de símbolos
             else:
-                # Mostrar el árbol sintáctico en el QTreeWidget
-                with open("ArbolSintactico.txt", "r") as archivo_arbol:
-                    arbol = eval(archivo_arbol.read())  # Convertir el string a estructura de Python
-                    self.mostrar_arbol_sintactico(arbol)
+                # Verificar si el archivo 'ArbolSintactico.pkl' existe antes de abrirlo
+                if os.path.exists("ArbolSintactico.pkl"):
+                    with open("ArbolSintactico.pkl", "rb") as archivo_arbol:
+                        arbol = pickle.load(archivo_arbol)  # Cargar el árbol sintáctico desde el archivo
+                        self.mostrar_arbol_sintactico(arbol)
+                else:
+                    self.errorSintactico.setText("No se encontró el archivo de árbol sintáctico.")
 
-                # Generar la tabla de símbolos y mostrarla en el QTableView
-                self.symbol_table.generar_tabla_simbolos(ast, self.tablaSimbolos)
 
     def mostrar_errores_lexicos(self, errores):
         # Limpiar el QTextEdit "errorLexico" antes de mostrar nuevos errores
@@ -101,24 +103,24 @@ class IDE(QMainWindow):
         # Limpiar el QTreeWidget antes de agregar el árbol
         self.resultadoSintactico.clear()
 
-        # Función recursiva para construir el árbol con anotaciones
+        # Función recursiva para construir el árbol con la estructura de nodos
         def construir_nodo_arbol(raiz, nodo):
-            if isinstance(nodo, tuple):
-                # Añadir anotación si el nodo contiene información adicional (tipo, valor, etc.)
-                if len(nodo) > 2:
-                    nuevo_nodo = QTreeWidgetItem([f"{nodo[0]} (tipo: {nodo[1]}, valor: {nodo[2]})"])
+            if isinstance(nodo, Nodo):
+                #evitar redundancia de nodos
+                if nodo.tipoNodo in ["Instrucciones", "Instruccion"]:
+                    for hijo in nodo.hijos:
+                        if hijo:
+                            construir_nodo_arbol(raiz, hijo)
                 else:
-                    nuevo_nodo = QTreeWidgetItem([nodo[0]])
-                raiz.addChild(nuevo_nodo)
-                for subnodo in nodo[1:]:
-                    construir_nodo_arbol(nuevo_nodo, subnodo)
-            elif isinstance(nodo, list):
-                for subnodo in nodo:
-                    construir_nodo_arbol(raiz, subnodo)
+                    nuevo_nodo = QTreeWidgetItem([f"{nodo.tipoNodo} (linea: {nodo.linea})"])
+                    raiz.addChild(nuevo_nodo)
+                    for hijo in nodo.hijos:
+                        if hijo:
+                            construir_nodo_arbol(nuevo_nodo, hijo)
             else:
                 nuevo_nodo = QTreeWidgetItem([str(nodo)])
                 raiz.addChild(nuevo_nodo)
-
+                
         # Crear el nodo raíz del árbol sintáctico
         raiz = QTreeWidgetItem(self.resultadoSintactico)
         raiz.setText(0, "Programa")
@@ -128,7 +130,7 @@ class IDE(QMainWindow):
 
         # Expandir todo el árbol para que se vea completo
         self.resultadoSintactico.expandAll()
-        
+
 # Función principal para ejecutar el IDE
 if __name__ == "__main__":
     app = QApplication(sys.argv)

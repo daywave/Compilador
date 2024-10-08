@@ -53,21 +53,11 @@ t_PARIZQ = r'\('
 t_PARDER = r'\)'
 t_LLAVIZQ = r'\{'
 t_LLAVDER = r'\}'
-# Expresiones regulares para los valores booleanos
-t_VERDADERO = r'true'
-t_FALSO = r'false'
-t_AND = r'and'
-t_OR = r'or'
-t_FSI = r'fi'
-
-
-
-
 
 # Expresiones regulares para tokens compuestos
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
+    t.type = reservadas.get(t.value, 'ID')  # Verificar si es una palabra reservada
     return t
 
 def t_NUMERO(t):
