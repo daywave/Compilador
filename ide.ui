@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1124</width>
-    <height>784</height>
+    <width>1470</width>
+    <height>835</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,7 +32,7 @@
        </font>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -43,8 +43,8 @@
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>501</width>
-          <height>651</height>
+          <width>681</width>
+          <height>711</height>
          </rect>
         </property>
        </widget>
@@ -62,8 +62,8 @@
          <rect>
           <x>20</x>
           <y>10</y>
-          <width>491</width>
-          <height>651</height>
+          <width>671</width>
+          <height>701</height>
          </rect>
         </property>
         <column>
@@ -83,8 +83,8 @@
          <rect>
           <x>10</x>
           <y>20</y>
-          <width>521</width>
-          <height>651</height>
+          <width>691</width>
+          <height>701</height>
          </rect>
         </property>
        </widget>
@@ -98,8 +98,8 @@
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>511</width>
-          <height>651</height>
+          <width>691</width>
+          <height>721</height>
          </rect>
         </property>
        </widget>
@@ -125,7 +125,7 @@
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>521</width>
+          <width>671</width>
           <height>301</height>
          </rect>
         </property>
@@ -179,8 +179,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1124</width>
-     <height>23</height>
+     <width>1470</width>
+     <height>36</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArchivo">
