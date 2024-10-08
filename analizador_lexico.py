@@ -8,7 +8,7 @@ tokens = [
     'DIV', 'POTENCIA', 'MENOR', 'MENORIGUAL', 'MAYOR', 'MAYORIGUAL',
     'IGUAL', 'DISTINTO', 'ASIGNACION', 'PUNTOCOMA', 'COMA', 'PARIZQ',
     'PARDER', 'LLAVIZQ', 'LLAVDER', 'ID', 'NUMERO', 'BREAK', 'THEN',
-    'NUMERO_HEX', 'CONCAT'
+    'NUMERO_HEX'
 ]
 
 # Definición de palabras reservadas
@@ -53,67 +53,74 @@ t_PARIZQ = r'\('
 t_PARDER = r'\)'
 t_LLAVIZQ = r'\{'
 t_LLAVDER = r'\}'
-t_CONCAT = r'&'  # Token para la concatenación
+# Expresiones regulares para los valores booleanos
+t_VERDADERO = r'true'
+t_FALSO = r'false'
+t_AND = r'and'
+t_OR = r'or'
+t_FSI = r'fi'
 
-# Regla para identificadores
+
+
+
+
+# Expresiones regulares para tokens compuestos
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    if t.value in reservadas:
-        t.type = reservadas[t.value]  # Verifica si es palabra reservada
-    elif len(t.value) > 30:  # Ejemplo de límite de longitud
-        print(f"Error: identificador '{t.value}' demasiado largo.")
-        t.type = 'ID'
+    t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
     return t
 
-# Regla para números
 def t_NUMERO(t):
     r'\d+(\.\d+)?'
     try:
         t.value = float(t.value)
     except ValueError:
-        print(f"Error: valor numérico inválido '{t.value}'")
+        with open("Errores.txt", "a") as archivo_errores:
+            archivo_errores.write(f"Error: valor numérico inválido '{t.value}' en línea {t.lineno}\n")
         t.value = 0
     return t
 
-# Regla para comentarios de una sola línea
-def t_COMENTARIO_UNA_LINEA(t):
-    r'//.*'
-    pass  # Ignorar comentarios de una sola línea
-
-# Regla para comentarios de múltiples líneas
-def t_COMENTARIO_MULTILINEA(t):
-    r'/\*(.|\n)*?\*/'
-    pass  # Ignorar comentarios de múltiples líneas
-
-# Regla para números hexadecimales
 def t_NUMERO_HEX(t):
     r'0x[0-9a-fA-F]+'
     t.value = int(t.value, 16)
     return t
 
-# Ignorar espacios en blanco y tabulaciones
+# Comentarios
+def t_COMENTARIO_UNA_LINEA(t):
+    r'//.*'
+    pass  # Ignorar comentarios de una sola línea
+
+def t_COMENTARIO_MULTILINEA(t):
+    r'/\*(.|\n)*?\*/'
+    pass  # Ignorar comentarios de múltiples líneas
+
+# Manejar espacios y saltos de línea
 t_ignore = ' \t'
 
-# Regla para manejar saltos de línea
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-# Regla para manejar errores
+# Manejo de errores
 def t_error(t):
-    print(f"Error: carácter ilegal '{t.value[0]}' en la línea {t.lineno}")
+    with open("Errores.txt", "a") as archivo_errores:
+        archivo_errores.write(f"Caracter ilegal '{t.value[0]}' en la línea {t.lineno}\n")
     t.lexer.skip(1)
 
 # Construir el analizador léxico
 lexer = lex.lex()
 
-# Función para analizar una cadena de entrada
-def analizar(data):
-    lexer.input(data)
-    tokens_encontrados = []
+# Función para analizar el código y escribir tokens y errores en archivos
+def analizar_codigo(codigo):
+    lexer.input(codigo)
+
+    # Limpiar archivos previos
+    with open("Tokens.txt", "w") as archivo_tokens, open("Errores.txt", "w") as archivo_errores:
+        pass
+
     while True:
         tok = lexer.token()
         if not tok:
             break
-        tokens_encontrados.append(tok)
-    return tokens_encontrados
+        with open("Tokens.txt", "a") as archivo_tokens:
+            archivo_tokens.write(f"{tok.value}\t{tok.type}\tLínea {tok.lineno}\n")
