@@ -1,12 +1,9 @@
 import sys
-
-#importaciones de pyqt
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QTableWidgetItem, QFileDialog, QTreeWidgetItem, QTextEdit
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QFileDialog, QTreeWidgetItem, QTextEdit
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QFont
 
-#importaciones desde archivos
 from analizador_lexico import analizar_codigo  # Importar el analizador léxico
 from analizador_sintaxis import analizar_sintactico  # Importar el analizador sintáctico
 from syntax_highlighter import Highlighter
@@ -17,7 +14,6 @@ class IDE(QMainWindow):
     def __init__(self):
         super().__init__()
         loadUi("ide.ui", self)  # Cargar el archivo .ui
-        
         
         self.symbol_table = SymbolTable()  # Instancia de la tabla de símbolos
         # Configurar el resaltador de sintaxis
@@ -57,7 +53,6 @@ class IDE(QMainWindow):
         # Fase 2: Realizar el análisis sintáctico si no hay errores léxicos
         ast, errores_sintacticos = analizar_sintactico(codigo)
 
-        
         # Leer y mostrar los errores sintácticos desde el archivo
         with open("ErroresSintacticos.txt", "r") as archivo_errores:
             errores = archivo_errores.read()
@@ -128,7 +123,7 @@ class IDE(QMainWindow):
 
         # Expandir todo el árbol para que se vea completo
         self.resultadoSintactico.expandAll()
-        
+
 # Función principal para ejecutar el IDE
 if __name__ == "__main__":
     app = QApplication(sys.argv)
