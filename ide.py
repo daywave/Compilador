@@ -95,6 +95,9 @@ class IDE(QMainWindow):
     def mostrar_arbol_sintactico(self, ast):
         # Limpiar el QTreeWidget antes de agregar el árbol
         self.resultadoSintactico.clear()
+        font = QFont()
+        font.setPointSize(15)  # Puedes cambiar este valor al tamaño de fuente que desees
+        self.resultadoSintactico.setFont(font)
 
         # Función recursiva para construir el árbol con anotaciones
         def construir_nodo_arbol(raiz, nodo):
