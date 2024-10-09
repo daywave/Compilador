@@ -4,76 +4,58 @@ from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QFont
 
-from analizador_lexico import analizar_codigo  # Importar el analizador léxico
-from analizador_sintaxis import analizar_sintactico  # Importar el analizador sintáctico
+from analizador_lexico import analizar_codigo
+from analizador_sintaxis import analizar_sintactico
 from syntax_highlighter import Highlighter
 from symtab import SymbolTable
-
+from analizador_semantico import analizar_semantico
 
 class IDE(QMainWindow):
     def __init__(self):
         super().__init__()
-        loadUi("ide.ui", self)  # Cargar el archivo .ui
+        loadUi("ide.ui", self)
         
-        self.symbol_table = SymbolTable()  # Instancia de la tabla de símbolos
-        # Configurar el resaltador de sintaxis
+        self.symbol_table = SymbolTable()
         self.highlighter = Highlighter(self.seccionCodigo.document())
-        # Conectar las acciones de los botones
+        
         self.actionLexico.triggered.connect(self.realizar_analisis_lexico)
         self.actionSintactico.triggered.connect(self.realizar_analisis_sintactico)
+        self.actionSemantico.triggered.connect(self.realizar_analisis_semantico)
 
-        # Configurar modelo de la tabla para mostrar los tokens
         self.modelo_lexico = QStandardItemModel()
         self.modelo_lexico.setHorizontalHeaderLabels(['Tipo', 'Valor', 'Línea'])
         self.resultadoLexico.setModel(self.modelo_lexico)
 
     def realizar_analisis_lexico(self):
-        # Obtener el código del QTextEdit llamado "seccionCodigo"
         codigo = self.seccionCodigo.toPlainText()
-
-        # Llamar al análisis léxico y generar los archivos de tokens y errores
         analizar_codigo(codigo)
-
-        # Leer errores desde el archivo
-        with open("Errores.txt", 'r') as archivo_errores:
-            errores = archivo_errores.readlines()
-
-        # Si hay errores léxicos, mostrarlos en el QTextEdit "errorLexico"
-        if errores:
-            self.mostrar_errores_lexicos(errores)
-            self.resultadoLexico.setModel(None)  # Limpiar la tabla de tokens
-        else:
-            # Si no hay errores, mostrar los tokens
-            self.mostrar_resultado_lexico("Tokens.txt")
+        self.mostrar_resultado_lexico("Tokens.txt")
+        self.mostrar_errores_lexicos("Errores.txt")
 
     def realizar_analisis_sintactico(self):
-        # Leer el código nuevamente para análisis sintáctico
         codigo = self.seccionCodigo.toPlainText()
+        ast, errores_sintacticos = analizar_sintactico(codigo)
+        
+        if errores_sintacticos:
+            self.mostrar_errores_sintacticos(errores_sintacticos)
+        else:
+            self.mostrar_arbol_sintactico(ast)
+            self.symbol_table.generar_tabla_simbolos(ast, self.tablaSimbolos)
 
-        # Fase 2: Realizar el análisis sintáctico si no hay errores léxicos
+    def realizar_analisis_semantico(self):
+        codigo = self.seccionCodigo.toPlainText()
         ast, errores_sintacticos = analizar_sintactico(codigo)
 
-        # Leer y mostrar los errores sintácticos desde el archivo
-        with open("ErroresSintacticos.txt", "r") as archivo_errores:
-            errores = archivo_errores.read()
-            if errores.strip() != "Sin errores sintácticos":
-                self.errorSintactico.setText(errores)
-                self.resultadoSintactico.clear()
-                self.tablaSimbolos.setModel(None)  # Limpiar la tabla de símbolos
-            else:
-                # Mostrar el árbol sintáctico en el QTreeWidget
-                with open("ArbolSintactico.txt", "r") as archivo_arbol:
-                    arbol = eval(archivo_arbol.read())  # Convertir el string a estructura de Python
-                    self.mostrar_arbol_sintactico(arbol)
+        if errores_sintacticos:
+            self.errorSemantico.setText("No se puede realizar el análisis semántico debido a errores sintácticos.")
+            return
 
-                # Generar la tabla de símbolos y mostrarla en el QTableView
-                self.symbol_table.generar_tabla_simbolos(ast, self.tablaSimbolos)
+        errores_semanticos = analizar_semantico(ast, self.symbol_table)
 
-    def mostrar_errores_lexicos(self, errores):
-        # Limpiar el QTextEdit "errorLexico" antes de mostrar nuevos errores
-        self.errorLexico.clear()
-        for error in errores:
-            self.errorLexico.append(error)
+        if errores_semanticos:
+            self.mostrar_errores_semanticos(errores_semanticos)
+        else:
+            self.mostrar_resultado_semantico(ast)
 
     def mostrar_resultado_lexico(self, archivo_tokens):
         # Limpiar el modelo anterior
@@ -91,6 +73,19 @@ class IDE(QMainWindow):
 
         # Asignar el modelo al QTableView
         self.resultadoLexico.setModel(self.modelo_lexico)
+
+    def mostrar_errores_lexicos(self, archivo_errores):
+        # Limpiar el QTextEdit "errorLexico" antes de mostrar nuevos errores
+        self.errorLexico.clear()
+        with open(archivo_errores, 'r') as archivo:
+            errores = archivo.readlines()
+            for error in errores:
+                self.errorLexico.append(error.strip())
+
+    def mostrar_errores_sintacticos(self, errores):
+        self.errorSintactico.clear()
+        for error in errores:
+            self.errorSintactico.append(str(error))
 
     def mostrar_arbol_sintactico(self, ast):
         # Limpiar el QTreeWidget antes de agregar el árbol
@@ -127,7 +122,16 @@ class IDE(QMainWindow):
         # Expandir todo el árbol para que se vea completo
         self.resultadoSintactico.expandAll()
 
-# Función principal para ejecutar el IDE
+    def mostrar_errores_semanticos(self, errores):
+        self.errorSemantico.clear()
+        for error in errores:
+            self.errorSemantico.append(str(error))
+
+    def mostrar_resultado_semantico(self, ast):
+        self.symbol_table.generar_tabla_simbolos(ast, self.resultadoSemantic)
+        self.errorSemantico.clear()
+        self.errorSemantico.append("Análisis semántico completado sin errores.")
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ventana = IDE()
