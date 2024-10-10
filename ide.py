@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QFileDialog, QTreeWidgetItem, QTextEdit
+from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QFileDialog, QTreeWidgetItem, QTextEdit, QLineEdit
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.uic import loadUi
 from PyQt5.QtGui import QFont
@@ -17,7 +17,23 @@ class IDE(QMainWindow):
         
         self.symbol_table = SymbolTable()
         self.highlighter = Highlighter(self.seccionCodigo.document())
+
+        # Conectar los widgets necesarios
+        self.seccionCodigo = self.findChild(QTextEdit, 'seccionCodigo')
+        self.mostrarCursor = self.findChild(QLineEdit, 'mostrarCursor')
+        self.mostrarLinea = self.findChild(QTextEdit, 'mostrarLinea')
+
+        # Asegurarse de que mostrarLinea sea de solo lectura
+        self.mostrarLinea.setReadOnly(True)
         
+        # Conectar señales
+        self.seccionCodigo.cursorPositionChanged.connect(self.actualizar_posicion)
+        self.seccionCodigo.textChanged.connect(self.actualizar_numeros_linea)
+        
+        # Inicializar los valores
+        self.actualizar_numeros_linea()
+        self.actualizar_posicion()
+
         self.actionLexico.triggered.connect(self.realizar_analisis_lexico)
         self.actionSintactico.triggered.connect(self.realizar_analisis_sintactico)
         self.actionSemantico.triggered.connect(self.realizar_analisis_semantico)
@@ -25,6 +41,20 @@ class IDE(QMainWindow):
         self.modelo_lexico = QStandardItemModel()
         self.modelo_lexico.setHorizontalHeaderLabels(['Tipo', 'Valor', 'Línea'])
         self.resultadoLexico.setModel(self.modelo_lexico)
+    
+    def actualizar_posicion(self):
+        # Obtener la posición del cursor
+        cursor = self.seccionCodigo.textCursor()
+        linea = cursor.blockNumber() + 1
+        columna = cursor.columnNumber() + 1
+        self.mostrarCursor.setText(f"Línea: {linea}, Columna: {columna}")
+
+    def actualizar_numeros_linea(self):
+        # Obtener el número total de líneas
+        total_lineas = self.seccionCodigo.document().blockCount()
+        numeros_linea = "\n".join(str(i + 1) for i in range(total_lineas))
+        self.mostrarLinea.setPlainText(numeros_linea)
+
 
     def realizar_analisis_lexico(self):
         codigo = self.seccionCodigo.toPlainText()

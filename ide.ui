@@ -6,186 +6,237 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1470</width>
-    <height>822</height>
+    <width>1651</width>
+    <height>896</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="2" rowspan="2">
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
+   <widget class="QTextEdit" name="mostrarLinea">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>31</width>
+      <height>471</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Source Code Pro</family>
+      <italic>true</italic>
+     </font>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="seccionCodigo">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>10</y>
+      <width>781</width>
+      <height>471</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Source Code Pro</family>
+     </font>
+    </property>
+   </widget>
+   <widget class="QTabWidget" name="tabWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>520</y>
+      <width>811</width>
+      <height>321</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab_5">
+     <attribute name="title">
+      <string>Errores Lexicos</string>
+     </attribute>
+     <widget class="QTextEdit" name="errorLexico">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>781</width>
+        <height>261</height>
+       </rect>
       </property>
-      <property name="currentIndex">
-       <number>4</number>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
-      <widget class="QWidget" name="tab_3">
-       <attribute name="title">
-        <string>Lexico</string>
-       </attribute>
-       <widget class="QTableView" name="resultadoLexico">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>681</width>
-          <height>691</height>
-         </rect>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tab">
-       <property name="toolTip">
-        <string>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_6">
+     <attribute name="title">
+      <string>Errores Sintacticos</string>
+     </attribute>
+     <widget class="QTextEdit" name="errorSintactico">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>671</width>
+        <height>281</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_7">
+     <attribute name="title">
+      <string>Errores Semanticos</string>
+     </attribute>
+     <widget class="QTextEdit" name="errorSemantico">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>671</width>
+        <height>271</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>10</y>
+      <width>491</width>
+      <height>821</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="QWidget" name="tab_9">
+     <attribute name="title">
+      <string>Lexico</string>
+     </attribute>
+     <widget class="QTableView" name="resultadoLexico">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>461</width>
+        <height>771</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_10">
+     <property name="toolTip">
+      <string>
                                                         &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <attribute name="title">
+      <string>Sintactico</string>
+     </attribute>
+     <widget class="QTreeWidget" name="resultadoSintactico">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>461</width>
+        <height>771</height>
+       </rect>
+      </property>
+      <column>
+       <property name="text">
+        <string>Árbol sintáctico</string>
        </property>
-       <attribute name="title">
-        <string>Sintactico</string>
-       </attribute>
-       <widget class="QTreeWidget" name="resultadoSintactico">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>681</width>
-          <height>691</height>
-         </rect>
-        </property>
-        <column>
-         <property name="text">
-          <string>Analizador sintactico
-                       </string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>15</pointsize>
-          </font>
-         </property>
-        </column>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>Semantico</string>
-       </attribute>
-       <widget class="QTableView" name="resultadoSemantic">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>681</width>
-          <height>691</height>
-         </rect>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tab_8">
-       <attribute name="title">
-        <string>Tabla de símbolos</string>
-       </attribute>
-       <widget class="QTableView" name="tablaSimbolos">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>681</width>
-          <height>691</height>
-         </rect>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tab_4">
-       <attribute name="title">
-        <string>Codigo Intermedio</string>
-       </attribute>
-      </widget>
+       <property name="font">
+        <font>
+         <family>Source Code Pro</family>
+         <pointsize>10</pointsize>
+         <bold>false</bold>
+         <hintingpreference>PreferDefaultHinting</hintingpreference>
+        </font>
+       </property>
+      </column>
      </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QTabWidget" name="tabWidget_2">
-      <property name="currentIndex">
-       <number>2</number>
-      </property>
-      <widget class="QWidget" name="tab_5">
-       <attribute name="title">
-        <string>Errores Lexicos</string>
-       </attribute>
-       <widget class="QTextEdit" name="errorLexico">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>681</width>
-          <height>311</height>
-         </rect>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tab_6">
-       <attribute name="title">
-        <string>Errores Sintacticos</string>
-       </attribute>
-       <widget class="QTextEdit" name="errorSintactico">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>681</width>
-          <height>311</height>
-         </rect>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="tab_7">
-       <attribute name="title">
-        <string>Errores Semanticos</string>
-       </attribute>
-       <widget class="QTextEdit" name="errorSemantico">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>681</width>
-          <height>311</height>
-         </rect>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </widget>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QTextEdit" name="seccionCodigo">
-      <property name="font">
-       <font>
-        <pointsize>12</pointsize>
-       </font>
+    </widget>
+    <widget class="QWidget" name="tab_11">
+     <attribute name="title">
+      <string>Semantico</string>
+     </attribute>
+     <widget class="QTableView" name="resultadoSemantic">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>461</width>
+        <height>771</height>
+       </rect>
       </property>
      </widget>
-    </item>
-   </layout>
+    </widget>
+    <widget class="QWidget" name="tab_12">
+     <attribute name="title">
+      <string>Tabla de símbolos</string>
+     </attribute>
+     <widget class="QTableView" name="tablaSimbolos">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>681</width>
+        <height>771</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_13">
+     <attribute name="title">
+      <string>Codigo Intermedio</string>
+     </attribute>
+    </widget>
+   </widget>
+   <widget class="QLineEdit" name="mostrarCursor">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>480</y>
+      <width>811</width>
+      <height>26</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="cursorMoveStyle">
+        <enum>Qt::LogicalMoveStyle</enum> <!-- Usa LogicalMoveStyle, que es el valor por defecto en muchos casos -->
+    </property>
+    
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1470</width>
-     <height>36</height>
+     <width>1651</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuArchivo">
