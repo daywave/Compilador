@@ -226,8 +226,7 @@
     </property>
     <property name="cursorMoveStyle">
         <enum>Qt::LogicalMoveStyle</enum> <!-- Usa LogicalMoveStyle, que es el valor por defecto en muchos casos -->
-    </property>
-    
+    </property>    
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
