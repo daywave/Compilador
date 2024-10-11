@@ -1,173 +1,305 @@
 import ply.yacc as yacc
-from analizador_lexico import tokens  # Importar los tokens desde el analizador léxico
+from analizador_lexico import tokens
 
-# Definimos la precedencia de los operadores
-precedence = (
-    ('left', 'OR'),
-    ('left', 'AND'),
-    ('left', 'IGUAL', 'DISTINTO'),
-    ('left', 'MENOR', 'MAYOR', 'MENORIGUAL', 'MAYORIGUAL'),
-    ('left', 'SUMA', 'RESTA'),
-    ('left', 'MULT', 'DIV'),
-    ('right', 'NO'),
-)
+# Clase Nodo para representar el árbol sintáctico
+class Nodo:
+    def __init__(self, tipo, valor=None):
+        self.tipo = tipo
+        self.valor = valor
+        self.hijos = []
 
-# Lista para almacenar errores
-errores_sintacticos = []
+    def agregar_hijo(self, nodo_hijo):
+        self.hijos.append(nodo_hijo)
 
-# Definimos la gramática
-def p_program(p):
-    '''program : PROGRAMA LLAVIZQ instrucciones LLAVDER'''
-    p[0] = ('program', p[3])
+    def __repr__(self):
+        return f"Nodo({self.tipo}, {self.valor}, {self.hijos})"
 
-def p_instrucciones(p):
-    '''instrucciones : instrucciones instruccion
-                     | instruccion'''
+# Definición de las reglas de producción
+def p_programa(p):
+    '''
+    programa : PROGRAMA LLAVIZQ list_decl list_sent LLAVDER
+    '''
+    nodo_programa = Nodo('Programa')
+    nodo_programa.hijos.extend(p[3])  # lista de declaraciones
+    nodo_programa.agregar_hijo(p[4])  # lista de sentencias
+    p[0] = nodo_programa
+
+def p_list_decl(p):
+    '''
+    list_decl : decl list_decl
+              | decl
+    '''
     if len(p) == 3:
-        p[0] = ('instrucciones', p[1], p[2])
+        p[0] = [p[1]] + p[2]  # Concatenamos las declaraciones como una lista
     else:
-        p[0] = ('instrucciones', p[1])
+        p[0] = [p[1]]  # Solo una declaración
 
-def p_instruccion(p):
-    '''instruccion : declaracion
-                   | asignacion
-                   | control
-                   | lectura
-                   | escritura'''
+
+def p_decl(p):
+    '''
+    decl : tipo list_id PUNTOCOMA
+    '''
+    nodo_decl = Nodo('declaracion')  # Nodo 'declaracion'
+    for id_var in p[2]:
+        nodo_decl.agregar_hijo(Nodo(id_var))  # Cada identificador como hijo del nodo 'declaracion'
+    p[0] = nodo_decl  # Retorna el nodo de declaración
+
+def p_tipo(p):
+    '''
+    tipo : ENTERO
+         | FLOTANTE
+         | BOOLEANO
+    '''
+    p[0] = Nodo('tipo', p[1])
+
+def p_list_id(p):
+    '''
+    list_id : ID COMA list_id
+            | ID
+    '''
+    if len(p) == 4:
+        p[0] = [p[1]] + p[3]  # Lista de identificadores
+    else:
+        p[0] = [p[1]]  # Un solo identificador
+
+def p_list_sent(p):
+    '''
+    list_sent : sent list_sent
+              | empty
+              | error PUNTOCOMA list_sent
+    '''
+    nodo_sent = Nodo('list_sent')
+    if len(p) == 3:
+        nodo_sent.agregar_hijo(p[1])
+        nodo_sent.agregar_hijo(p[2])
+        p[0] = nodo_sent
+    elif len(p) == 4:
+        print("Error de sintaxis en 'list_sent'")
+        p[0] = p[3]
+    else:
+        p[0] = nodo_sent
+
+def p_sent(p):
+    '''
+    sent : sent_if
+         | sent_while
+         | sent_do
+         | sent_read
+         | sent_write
+         | bloque
+         | sent_assign
+         | sent_break
+    '''
     p[0] = p[1]
 
-def p_declaracion(p):
-    '''declaracion : ENTERO lista_ids PUNTOCOMA
-                   | FLOTANTE lista_ids PUNTOCOMA
-                   | BOOLEANO lista_ids PUNTOCOMA'''
-    p[0] = ('declaracion', p[1], p[2])
+def p_sent_if(p):
+    '''
+    sent_if : SI PARIZQ exp_bool PARDER THEN bloque FSI
+            | SI PARIZQ exp_bool PARDER THEN bloque SINO bloque FSI
+    '''
+    if len(p) == 8:
+        p[0] = Nodo('sent_if', p[3])
+        p[0].agregar_hijo(p[6])
+    else:
+        p[0] = Nodo('sent_if', p[3])
+        p[0].agregar_hijo(p[6])
+        p[0].agregar_hijo(p[8])
 
+def p_sent_while(p):
+    '''
+    sent_while : MIENTRAS PARIZQ exp_bool PARDER bloque
+    '''
+    p[0] = Nodo('sent_while', p[3])
+    p[0].agregar_hijo(p[5])
 
-def p_expresion_booleana(p):
-    '''expresion : VERDADERO
-                 | FALSO'''
-    p[0] = ('booleano', p[1])
+def p_sent_do(p):
+    '''
+    sent_do : HACER bloque HASTA PARIZQ exp_bool PARDER PUNTOCOMA
+    '''
+    p[0] = Nodo('sent_do', p[5])
+    p[0].agregar_hijo(p[2])
 
-def p_expresion_logica(p):
-    '''expresion : expresion AND expresion
-                 | expresion OR expresion'''
-    p[0] = ('operacion_logica', p[2], p[1], p[3])
+def p_sent_read(p):
+    '''
+    sent_read : LEER ID PUNTOCOMA
+    '''
+    p[0] = Nodo('sent_read', p[2])
 
-def p_instruccion_break(p):
-    '''instruccion : BREAK PUNTOCOMA'''
-    p[0] = ('break',)
+def p_sent_write(p):
+    '''
+    sent_write : ESCRIBIR exp_bool PUNTOCOMA
+    '''
+    p[0] = Nodo('sent_write', p[2])
 
-def p_expresion_negacion(p):
-    '''expresion : NO expresion'''
-    p[0] = ('negacion', p[2])
+def p_bloque(p):
+    '''
+    bloque : LLAVIZQ list_sent LLAVDER
+    '''
+    p[0] = Nodo('bloque')
+    p[0].agregar_hijo(p[2])
 
-def p_expresion_logica(p):
-    '''expresion : expresion AND expresion
-                 | expresion OR expresion'''
-    p[0] = ('operacion_logica', p[2], p[1], p[3])
+def p_sent_assign(p):
+    '''
+    sent_assign : ID ASIGNACION exp_bool PUNTOCOMA
+    '''
+    p[0] = Nodo('sent_assign', p[1])
+    p[0].agregar_hijo(p[3])
 
-def p_expresion_potencia(p):
-    '''expresion : expresion POTENCIA expresion'''
-    p[0] = ('potencia', p[1], p[3])
+def p_sent_break(p):
+    '''
+    sent_break : BREAK PUNTOCOMA
+    '''
+    p[0] = Nodo('sent_break')
 
-
-def p_lista_ids(p):
-    '''lista_ids : lista_ids COMA ID
-                 | ID'''
+def p_exp_bool(p):
+    '''
+    exp_bool : exp_bool OR comb
+             | comb
+    '''
     if len(p) == 4:
-        p[0] = ('lista_ids', p[1], p[3])
+        p[0] = Nodo('exp_bool')
+        p[0].agregar_hijo(p[1])
+        p[0].agregar_hijo(Nodo('or'))
+        p[0].agregar_hijo(p[3])
     else:
-        p[0] = ('lista_ids', p[1])
+        p[0] = p[1]
 
-def p_asignacion(p):
-    '''asignacion : ID ASIGNACION expresion PUNTOCOMA'''
-    p[0] = ('asignacion', p[1], p[3])
-
-def p_expresion_binaria(p):
-    '''expresion : expresion SUMA expresion
-                 | expresion RESTA expresion
-                 | expresion MULT expresion
-                 | expresion DIV expresion'''
-    p[0] = ('expresion_binaria', p[2], p[1], p[3])
-
-def p_expresion_parentesis(p):
-    '''expresion : PARIZQ expresion PARDER'''
-    p[0] = p[2]
-
-def p_expresion_numero(p):
-    '''expresion : NUMERO
-                 | NUMERO_HEX'''
-    p[0] = ('numero', p[1])
-
-def p_expresion_id(p):
-    '''expresion : ID'''
-    p[0] = ('variable', p[1])
-
-def p_control_while(p):
-    '''control : MIENTRAS PARIZQ expresion PARDER LLAVIZQ instrucciones LLAVDER'''
-    p[0] = ('while', p[3], p[6])
-
-def p_control_if(p):
-    '''control : SI PARIZQ expresion PARDER THEN LLAVIZQ instrucciones LLAVDER fsi'''
-    p[0] = ('if', p[3], p[7], p[9])
-
-def p_fsi(p):
-    '''fsi : FSI
-           | SINO LLAVIZQ instrucciones LLAVDER FSI'''
-    if len(p) == 2:
-        p[0] = ('fi',)
+def p_comb(p):
+    '''
+    comb : comb AND igualdad
+         | igualdad
+    '''
+    if len(p) == 4:
+        p[0] = Nodo('comb')
+        p[0].agregar_hijo(p[1])
+        p[0].agregar_hijo(Nodo('and'))
+        p[0].agregar_hijo(p[3])
     else:
-        p[0] = ('else', p[3], 'fi')
+        p[0] = p[1]
 
-def p_control_do_until(p):
-    '''control : HACER LLAVIZQ instrucciones LLAVDER HASTA PARIZQ expresion PARDER PUNTOCOMA'''
-    p[0] = ('do_until', p[3], p[7])
+def p_igualdad(p):
+    '''
+    igualdad : igualdad IGUAL rel
+             | igualdad DISTINTO rel
+             | rel
+    '''
+    if len(p) == 4:
+        if p[2] == '==':
+            p[0] = Nodo('igualdad')
+            p[0].agregar_hijo(p[1])
+            p[0].agregar_hijo(Nodo('=='))
+            p[0].agregar_hijo(p[3])
+        else:
+            p[0] = Nodo('igualdad')
+            p[0].agregar_hijo(p[1])
+            p[0].agregar_hijo(Nodo('!='))
+            p[0].agregar_hijo(p[3])
+    else:
+        p[0] = p[1]
 
-def p_lectura(p):
-    '''lectura : LEER ID PUNTOCOMA'''
-    p[0] = ('lectura', p[2])
+def p_rel(p):
+    '''
+    rel : expr MENOR expr
+        | expr MAYOR expr
+        | expr MENORIGUAL expr
+        | expr MAYORIGUAL expr
+        | expr
+    '''
+    if len(p) == 4:
+        p[0] = Nodo('rel', p[2])
+        p[0].agregar_hijo(p[1])
+        p[0].agregar_hijo(p[3])
+    else:
+        p[0] = p[1]
 
-def p_escritura(p):
-    '''escritura : ESCRIBIR ID PUNTOCOMA'''
-    p[0] = ('escritura', p[2])
+def p_expr(p):
+    '''
+    expr : expr SUMA term
+         | expr RESTA term
+         | term
+    '''
+    if len(p) == 4:
+        if p[2] == '+':
+            p[0] = Nodo('expr')
+            p[0].agregar_hijo(p[1])
+            p[0].agregar_hijo(Nodo('+'))
+            p[0].agregar_hijo(p[3])
+        else:
+            p[0] = Nodo('expr')
+            p[0].agregar_hijo(p[1])
+            p[0].agregar_hijo(Nodo('-'))
+            p[0].agregar_hijo(p[3])
+    else:
+        p[0] = p[1]
 
-# Manejo de errores
+def p_term(p):
+    '''
+    term : term MULT unario
+         | term DIV unario
+         | unario
+    '''
+    if len(p) == 4:
+        if p[2] == '*':
+            p[0] = Nodo('term')
+            p[0].agregar_hijo(p[1])
+            p[0].agregar_hijo(Nodo('*'))
+            p[0].agregar_hijo(p[3])
+        else:
+            p[0] = Nodo('term')
+            p[0].agregar_hijo(p[1])
+            p[0].agregar_hijo(Nodo('/'))
+            p[0].agregar_hijo(p[3])
+    else:
+        p[0] = p[1]
+
+def p_unario(p):
+    '''
+    unario : NO unario
+           | RESTA unario
+           | factor
+    '''
+    if len(p) == 3:
+        if p[1] == 'not':
+            p[0] = Nodo('unario', 'not')
+            p[0].agregar_hijo(p[2])
+        else:
+            p[0] = Nodo('unario', '-')
+            p[0].agregar_hijo(p[2])
+    else:
+        p[0] = p[1]
+
+def p_factor(p):
+    '''
+    factor : PARIZQ exp_bool PARDER
+           | ID
+           | NUMERO
+           | VERDADERO
+           | FALSO
+    '''
+    if len(p) == 4:
+        p[0] = p[2]
+    else:
+        p[0] = Nodo('factor', p[1])
+
+def p_empty(p):
+    '''
+    empty :
+    '''
+    p[0] = None
+
 def p_error(p):
-    global errores_sintacticos
     if p:
-        error_msg = f"Error sintáctico en token '{p.value}', línea {p.lineno}"
-        errores_sintacticos.append(error_msg)
+        print(f"Error de sintaxis en token {p.type} en la línea {p.lineno}, columna {p.lexpos}")
+        parser.errok()
     else:
-        errores_sintacticos.append("Error sintáctico en el final del archivo")
+        print("Error de sintaxis en EOF")
 
-def p_expresion_comparativa(p):
-    '''expresion : expresion MENOR expresion
-                 | expresion MAYOR expresion
-                 | expresion MENORIGUAL expresion
-                 | expresion MAYORIGUAL expresion
-                 | expresion IGUAL expresion
-                 | expresion DISTINTO expresion'''
-    p[0] = ('comparacion', p[2], p[1], p[3])
-
-# Construir el analizador
+# Construir el analizador sintáctico
 parser = yacc.yacc()
 
-# Función para analizar el código
-def analizar_sintactico(codigo):
-    global errores_sintacticos
-    errores_sintacticos = []  # Reiniciar lista de errores
-    arbol_sintactico = parser.parse(codigo)
-
-    # Guardar el árbol en un archivo
-    with open("ArbolSintactico.txt", "w") as f:
-        f.write(str(arbol_sintactico))
-
-    # Guardar los errores en un archivo
-    with open("ErroresSintacticos.txt", "w") as f:
-        if errores_sintacticos:
-            for error in errores_sintacticos:
-                f.write(error + "\n")
-        else:
-            f.write("Sin errores sintácticos")
-
-    return arbol_sintactico, errores_sintacticos
+def analizar_sintactico(data):
+    try:
+        resultado = parser.parse(data)
+        return resultado, None  # Retorna el AST y sin errores
+    except Exception as e:
+        return None, str(e)  # Retorna None para el AST y el mensaje de error

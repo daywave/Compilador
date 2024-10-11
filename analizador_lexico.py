@@ -39,7 +39,6 @@ t_SUMA = r'\+'
 t_RESTA = r'-'
 t_MULT = r'\*'
 t_DIV = r'/'
-t_POTENCIA = r'\^'
 t_MENOR = r'<'
 t_MENORIGUAL = r'<='
 t_MAYOR = r'>'
@@ -53,64 +52,59 @@ t_PARIZQ = r'\('
 t_PARDER = r'\)'
 t_LLAVIZQ = r'\{'
 t_LLAVDER = r'\}'
-# Expresiones regulares para los valores booleanos
-t_VERDADERO = r'true'
-t_FALSO = r'false'
+
+
+# Manejo de operadores lógicos
 t_AND = r'and'
 t_OR = r'or'
-t_FSI = r'fi'
 
-
-
-
-
-# Expresiones regulares para tokens compuestos
+# Expresión regular para palabras reservadas e identificadores
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reservadas.get(t.value, 'ID')  # Check for reserved words
+    t.type = reservadas.get(t.value, 'ID')  # Chequear si es palabra reservada
     return t
 
+# Expresión regular para números enteros y flotantes
 def t_NUMERO(t):
     r'\d+(\.\d+)?'
     try:
-        t.value = float(t.value)
+        if '.' in t.value:
+            t.value = float(t.value)  # Convertir a float si contiene un punto decimal
+        else:
+            t.value = int(t.value)  # Convertir a int si no contiene punto decimal
     except ValueError:
-        with open("Errores.txt", "a") as archivo_errores:
-            archivo_errores.write(f"Error: valor numérico inválido '{t.value}' en línea {t.lineno}\n")
+        print(f"Error: valor numérico inválido '{t.value}' en la línea {t.lineno}")
         t.value = 0
     return t
 
-def t_NUMERO_HEX(t):
-    r'0x[0-9a-fA-F]+'
-    t.value = int(t.value, 16)
-    return t
 
-# Comentarios
+# Manejo de comentarios de una sola línea
 def t_COMENTARIO_UNA_LINEA(t):
     r'//.*'
-    pass  # Ignorar comentarios de una sola línea
+    pass  # Ignorar comentarios
 
+# Manejo de comentarios multilínea
 def t_COMENTARIO_MULTILINEA(t):
     r'/\*(.|\n)*?\*/'
-    pass  # Ignorar comentarios de múltiples líneas
+    pass  # Ignorar comentarios
 
-# Manejar espacios y saltos de línea
+# Manejo de espacios en blanco y tabulaciones
 t_ignore = ' \t'
 
+# Manejo de nuevas líneas para mantener el número de línea actualizado
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-# Manejo de errores
+# Manejo de errores léxicos
 def t_error(t):
-    with open("Errores.txt", "a") as archivo_errores:
-        archivo_errores.write(f"Caracter ilegal '{t.value[0]}' en la línea {t.lineno}\n")
+    print(f"Caracter ilegal '{t.value[0]}' en la línea {t.lineno}")
     t.lexer.skip(1)
 
-# Construir el analizador léxico
+# Construcción del analizador léxico
 lexer = lex.lex()
 
-# Función para analizar el código y escribir tokens y errores en archivos
+# Función para analizar el código
 def analizar_codigo(codigo):
     lexer.input(codigo)
 
@@ -118,9 +112,11 @@ def analizar_codigo(codigo):
     with open("Tokens.txt", "w") as archivo_tokens, open("Errores.txt", "w") as archivo_errores:
         pass
 
+    # Proceso de análisis
     while True:
         tok = lexer.token()
         if not tok:
             break
         with open("Tokens.txt", "a") as archivo_tokens:
             archivo_tokens.write(f"{tok.value}\t{tok.type}\tLínea {tok.lineno}\n")
+
